@@ -5,6 +5,8 @@ import { StatusUpdate } from '../types/status';
 import { PlanItem } from '../types/plan';
 import { SpontaneousProposal } from '../types/proposal';
 import { MemoryItem } from '../types/memory';
+import { plansRepository } from '../services/repositories/plansRepository';
+import { proposalRepository } from '../services/repositories/proposalRepository';
 
 // Placeholder hook for Auth Query
 export function useAuthQuery(): UseQueryResult<{ id: string; email: string } | null, Error> {
@@ -42,27 +44,27 @@ export function useStatusQuery(userId?: string): UseQueryResult<StatusUpdate | n
   });
 }
 
-// Placeholder hook for Plans Query
-export function usePlansQuery(): UseQueryResult<PlanItem[], Error> {
+// Real hook for Plans Query
+export function usePlansQuery(coupleId?: string): UseQueryResult<PlanItem[], Error> {
   return useQuery({
-    queryKey: queryKeys.plans.lists(),
+    queryKey: [...queryKeys.plans.lists(), coupleId ?? 'none'],
     queryFn: async () => {
-      // Placeholder - no implementation yet
-      return [];
+      if (!coupleId) return [];
+      return plansRepository.getByCoupleId(coupleId);
     },
-    enabled: false,
+    enabled: Boolean(coupleId),
   });
 }
 
-// Placeholder hook for Proposals Query
-export function useProposalsQuery(): UseQueryResult<SpontaneousProposal[], Error> {
+// Real hook for Proposals Query
+export function useProposalsQuery(coupleId?: string): UseQueryResult<SpontaneousProposal[], Error> {
   return useQuery({
-    queryKey: queryKeys.proposals.lists(),
+    queryKey: [...queryKeys.proposals.lists(), coupleId ?? 'none'],
     queryFn: async () => {
-      // Placeholder - no implementation yet
-      return [];
+      if (!coupleId) return [];
+      return proposalRepository.getByCoupleId(coupleId);
     },
-    enabled: false,
+    enabled: Boolean(coupleId),
   });
 }
 
