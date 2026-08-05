@@ -7,8 +7,6 @@ export type Json =
   | Json[];
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.15";
   };
@@ -230,6 +228,7 @@ export type Database = {
           priority: string;
           reminder_minutes: number | null;
           repeat: string;
+          source_proposal_id: string | null;
           start_at: string;
           title: string;
           updated_at: string;
@@ -248,6 +247,7 @@ export type Database = {
           priority?: string;
           reminder_minutes?: number | null;
           repeat?: string;
+          source_proposal_id?: string | null;
           start_at: string;
           title: string;
           updated_at?: string;
@@ -266,6 +266,7 @@ export type Database = {
           priority?: string;
           reminder_minutes?: number | null;
           repeat?: string;
+          source_proposal_id?: string | null;
           start_at?: string;
           title?: string;
           updated_at?: string;
@@ -330,40 +331,97 @@ export type Database = {
       };
       proposals: {
         Row: {
+          accepted_at: string | null;
+          auto_add_to_calendar: boolean;
+          category: string;
           couple_id: string;
+          cover_image: string | null;
           created_at: string;
           created_by: string;
+          declined_at: string | null;
           description: string | null;
+          dress_code: string | null;
+          end_datetime: string | null;
+          estimated_cost: number | null;
           id: string;
+          is_surprise: boolean;
+          latitude: number | null;
+          location: string | null;
+          longitude: number | null;
+          parent_proposal_id: string | null;
           planned_date: string;
+          priority: string;
+          reminder_minutes: number | null;
+          responded_at: string | null;
           response_message: string | null;
+          start_datetime: string;
           status: string;
           title: string;
           updated_at: string;
+          visibility: string;
+          weather_required: string | null;
         };
         Insert: {
+          accepted_at?: string | null;
+          auto_add_to_calendar?: boolean;
+          category?: string;
           couple_id: string;
+          cover_image?: string | null;
           created_at?: string;
           created_by: string;
+          declined_at?: string | null;
           description?: string | null;
+          dress_code?: string | null;
+          end_datetime?: string | null;
+          estimated_cost?: number | null;
           id?: string;
+          is_surprise?: boolean;
+          latitude?: number | null;
+          location?: string | null;
+          longitude?: number | null;
+          parent_proposal_id?: string | null;
           planned_date: string;
+          priority?: string;
+          reminder_minutes?: number | null;
+          responded_at?: string | null;
           response_message?: string | null;
+          start_datetime?: string;
           status?: string;
-          title?: string;
+          title: string;
           updated_at?: string;
+          visibility?: string;
+          weather_required?: string | null;
         };
         Update: {
+          accepted_at?: string | null;
+          auto_add_to_calendar?: boolean;
+          category?: string;
           couple_id?: string;
+          cover_image?: string | null;
           created_at?: string;
           created_by?: string;
+          declined_at?: string | null;
           description?: string | null;
+          dress_code?: string | null;
+          end_datetime?: string | null;
+          estimated_cost?: number | null;
           id?: string;
+          is_surprise?: boolean;
+          latitude?: number | null;
+          location?: string | null;
+          longitude?: number | null;
+          parent_proposal_id?: string | null;
           planned_date?: string;
+          priority?: string;
+          reminder_minutes?: number | null;
+          responded_at?: string | null;
           response_message?: string | null;
+          start_datetime?: string;
           status?: string;
           title?: string;
           updated_at?: string;
+          visibility?: string;
+          weather_required?: string | null;
         };
         Relationships: [
           {
@@ -376,6 +434,96 @@ export type Database = {
           {
             foreignKeyName: "proposals_created_by_fkey";
             columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      proposal_comments: {
+        Row: {
+          content: string;
+          created_at: string;
+          id: string;
+          is_deleted: boolean;
+          is_edited: boolean;
+          parent_id: string | null;
+          proposal_id: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          content: string;
+          created_at?: string;
+          id?: string;
+          is_deleted?: boolean;
+          is_edited?: boolean;
+          parent_id?: string | null;
+          proposal_id: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          content?: string;
+          created_at?: string;
+          id?: string;
+          is_deleted?: boolean;
+          is_edited?: boolean;
+          parent_id?: string | null;
+          proposal_id?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "proposal_comments_proposal_id_fkey";
+            columns: ["proposal_id"];
+            isOneToOne: false;
+            referencedRelation: "proposals";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "proposal_comments_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      proposal_reactions: {
+        Row: {
+          created_at: string;
+          emoji: string;
+          id: string;
+          proposal_id: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          emoji: string;
+          id?: string;
+          proposal_id: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          emoji?: string;
+          id?: string;
+          proposal_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "proposal_reactions_proposal_id_fkey";
+            columns: ["proposal_id"];
+            isOneToOne: false;
+            referencedRelation: "proposals";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "proposal_reactions_user_id_fkey";
+            columns: ["user_id"];
             isOneToOne: false;
             referencedRelation: "profiles";
             referencedColumns: ["id"];
