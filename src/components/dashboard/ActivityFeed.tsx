@@ -44,23 +44,23 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
   }, [hasNextPage, isFetchingNextPage, onFetchNextPage]);
 
   return (
-    <Card className="border-pink-200 dark:border-pink-900/30 shadow-sm flex flex-col h-full">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold flex items-center justify-between text-gray-900 dark:text-white">
+    <Card className="flex flex-col h-full">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-semibold text-foreground flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Activity className="w-5 h-5 text-pink-500" />
+            <Activity className="w-4 h-4 text-primary" />
             <span>Activity Feed</span>
           </div>
-          <span className="text-xs font-normal text-gray-400">Live updates</span>
+          <span className="text-[11px] font-medium text-muted-foreground">Live updates</span>
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="flex-1 space-y-4 overflow-y-auto max-h-[600px] pr-1">
+      <CardContent className="flex-1 space-y-4 overflow-y-auto max-h-[500px] pr-1">
         {isLoading ? (
           <div className="space-y-3">
-            <SkeletonCard height="h-20" />
-            <SkeletonCard height="h-20" />
-            <SkeletonCard height="h-20" />
+            <SkeletonCard height="h-16" />
+            <SkeletonCard height="h-16" />
+            <SkeletonCard height="h-16" />
           </div>
         ) : groupedActivities.length === 0 ? (
           <EmptyState
@@ -69,7 +69,7 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
             description="Activity updates like status changes, new plans, and memories will appear here live."
           />
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-5">
             {groupedActivities.map((group) => (
               <ActivityGroup
                 key={group.dateLabel}
@@ -79,16 +79,16 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
             ))}
 
             {/* Infinite Scroll Trigger Sentinel */}
-            <div ref={loadMoreRef} className="py-4 text-center">
+            <div ref={loadMoreRef} className="py-3 text-center">
               {isFetchingNextPage ? (
-                <div className="flex items-center justify-center gap-2 text-xs text-pink-600 font-semibold">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Loading more activities...</span>
+                <div className="flex items-center justify-center gap-2 text-xs text-primary font-medium">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Loading more...</span>
                 </div>
               ) : hasNextPage ? (
-                <span className="text-xs text-gray-400">Scroll for more</span>
+                <span className="text-xs text-muted-foreground">Scroll for more</span>
               ) : (
-                <span className="text-xs text-gray-400">You've reached the beginning</span>
+                <span className="text-xs text-muted-foreground">End of activities</span>
               )}
             </div>
           </div>
@@ -97,3 +97,4 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
     </Card>
   );
 };
+

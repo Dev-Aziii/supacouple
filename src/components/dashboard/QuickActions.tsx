@@ -3,10 +3,9 @@ import { motion } from 'framer-motion';
 import {
   MessageSquarePlus,
   CalendarPlus,
-  Gift,
+  HeartHandshake,
   Camera,
-  PlusCircle,
-  Settings,
+  UserPlus,
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
@@ -23,10 +22,9 @@ interface QuickActionsProps {
 export const QuickActions: React.FC<QuickActionsProps> = ({
   onSetStatus,
   onCreatePlan,
-  onInvitePartner: _onInvitePartner,
+  onInvitePartner,
   onCreateProposal,
   onAddMemory,
-  onOpenSettings,
   isPaired = true,
 }) => {
   const actions = [
@@ -34,62 +32,56 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
       label: 'Set Status',
       icon: MessageSquarePlus,
       onClick: onSetStatus,
-      color: 'bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/40 dark:text-blue-400',
     },
     {
       label: 'Create Plan',
       icon: CalendarPlus,
       onClick: onCreatePlan,
-      color: 'bg-pink-50 text-pink-600 hover:bg-pink-100 dark:bg-pink-950/40 dark:text-pink-400',
     },
     {
       label: 'Create Proposal',
-      icon: Gift,
+      icon: HeartHandshake,
       onClick: onCreateProposal,
       disabled: !isPaired,
-      color: 'bg-purple-50 text-purple-600 hover:bg-purple-100 dark:bg-purple-950/40 dark:text-purple-400',
     },
     {
       label: 'Add Memory',
       icon: Camera,
       onClick: onAddMemory,
       disabled: !isPaired,
-      color: 'bg-amber-50 text-amber-600 hover:bg-amber-100 dark:bg-amber-950/40 dark:text-amber-400',
     },
     {
-      label: 'Settings',
-      icon: Settings,
-      onClick: onOpenSettings,
-      color: 'bg-rose-50 text-rose-600 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-400',
+      label: 'Invite Partner',
+      icon: UserPlus,
+      onClick: onInvitePartner,
     },
   ];
 
   return (
-    <Card className="border-pink-200 dark:border-pink-900/30 shadow-sm">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold flex items-center gap-2 text-gray-900 dark:text-white">
-          <PlusCircle className="w-5 h-5 text-pink-500" />
-          Quick Actions
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-semibold text-foreground">
+          <span>Quick Actions</span>
         </CardTitle>
       </CardHeader>
 
       <CardContent>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           {actions.map((act) => {
             const Icon = act.icon;
             return (
               <motion.button
                 key={act.label}
-                whileHover={{ scale: act.disabled ? 1 : 1.03 }}
-                whileTap={{ scale: act.disabled ? 1 : 0.97 }}
+                whileHover={{ y: act.disabled ? 0 : -2 }}
+                whileTap={{ scale: act.disabled ? 1 : 0.98 }}
                 onClick={act.onClick}
                 disabled={act.disabled}
-                className={`p-3 rounded-xl border border-transparent font-semibold text-xs flex flex-col items-center justify-center gap-2 transition-all shadow-2xs ${
-                  act.color
-                } ${act.disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}`}
+                className={`p-4 rounded-xl border border-border bg-secondary/30 hover:bg-secondary/70 hover:border-border text-foreground font-medium text-xs flex flex-col items-center justify-center gap-2 transition-all ${
+                  act.disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'
+                }`}
               >
-                <Icon className="w-5 h-5" />
-                <span className="text-center">{act.label}</span>
+                <Icon className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
+                <span className="text-center truncate w-full">{act.label}</span>
               </motion.button>
             );
           })}
@@ -98,3 +90,4 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
     </Card>
   );
 };
+

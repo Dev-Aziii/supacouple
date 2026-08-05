@@ -148,16 +148,16 @@ export const DashboardPage: React.FC = () => {
       {/* 4. Current User Status & Presets */}
       <div className="space-y-3">
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1 shrink-0">
-            <Sparkles className="w-3.5 h-3.5 text-pink-500" />
-            Quick Presets:
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1 shrink-0">
+            <Sparkles className="w-3.5 h-3.5 text-primary" />
+            Presets:
           </span>
           {QUICK_PRESETS.map((preset) => (
             <button
               key={preset.type}
               type="button"
               onClick={() => handleQuickPresetClick(preset)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:bg-pink-50 dark:hover:bg-pink-950/40 text-xs font-semibold text-gray-800 dark:text-gray-200 shrink-0 transition-transform active:scale-95 shadow-2xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-secondary/30 hover:bg-secondary/70 text-xs font-medium text-foreground shrink-0 transition-transform active:scale-95"
             >
               <span>{preset.emoji}</span>
               <span>{preset.label}</span>
@@ -166,7 +166,7 @@ export const DashboardPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsPickerOpen(true)}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-pink-300 dark:border-pink-800 bg-pink-50 dark:bg-pink-950/50 text-xs font-bold text-pink-600 dark:text-pink-400 shrink-0 shadow-2xs"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-xl border border-primary/30 bg-primary/10 text-xs font-semibold text-primary shrink-0 transition-transform active:scale-95"
           >
             <Plus className="w-3.5 h-3.5" />
             Custom

@@ -62,40 +62,38 @@ export const TodayPlansCard: React.FC<TodayPlansCardProps> = ({
   };
 
   return (
-    <Card className="border-pink-200 dark:border-pink-900/30 shadow-sm">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-lg font-bold flex items-center gap-2 text-gray-900 dark:text-white">
-          <Calendar className="w-5 h-5 text-pink-500" />
-          Today's Plans
-        </CardTitle>
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-semibold text-foreground flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-primary" />
+            <span>Today's Plans</span>
+          </div>
 
-        <div className="flex items-center gap-2">
-          {onCreatePlan && (
-            <Button
-              onClick={onCreatePlan}
-              size="sm"
-              className="bg-pink-500 hover:bg-pink-600 text-white rounded-full h-8 px-3 text-xs"
-            >
-              <Plus className="w-3.5 h-3.5 mr-1" />
-              Create Plan
-            </Button>
-          )}
-          {onViewAllPlans && (
-            <Button onClick={onViewAllPlans} variant="ghost" size="sm" className="h-8 px-2 text-xs text-gray-500">
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          )}
-        </div>
+          <div className="flex items-center gap-2">
+            {onCreatePlan && (
+              <Button onClick={onCreatePlan} size="sm" className="h-8 text-xs">
+                <Plus className="w-3.5 h-3.5 mr-1" />
+                Create Plan
+              </Button>
+            )}
+            {onViewAllPlans && (
+              <Button onClick={onViewAllPlans} variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <ArrowRight className="w-4 h-4 text-muted-foreground" />
+              </Button>
+            )}
+          </div>
+        </CardTitle>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         {/* Next Event Countdown Hero Banner */}
         {nextPlan && (
-          <div className="bg-gradient-to-r from-rose-500 to-pink-500 text-white p-4 rounded-xl shadow-sm flex items-center justify-between">
+          <div className="bg-primary/10 border border-primary/20 text-foreground p-4 rounded-xl flex items-center justify-between">
             <div className="space-y-0.5">
-              <span className="text-xs uppercase tracking-wider font-semibold opacity-90">Next Event</span>
-              <h4 className="font-bold text-base line-clamp-1">{nextPlan.title}</h4>
-              <div className="flex items-center gap-2 text-xs opacity-90">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">Next Event</span>
+              <h4 className="font-semibold text-sm line-clamp-1">{nextPlan.title}</h4>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Clock className="w-3.5 h-3.5" />
                 <span>{formatTime(nextPlan.startAt)}</span>
                 {nextPlan.location && (
@@ -108,7 +106,7 @@ export const TodayPlansCard: React.FC<TodayPlansCardProps> = ({
               </div>
             </div>
             {countdownText && (
-              <div className="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-xs font-extrabold text-white whitespace-nowrap shadow-inner">
+              <div className="bg-card border border-border px-3 py-1.5 rounded-lg text-xs font-semibold text-primary whitespace-nowrap">
                 {countdownText}
               </div>
             )}
@@ -118,8 +116,8 @@ export const TodayPlansCard: React.FC<TodayPlansCardProps> = ({
         {/* Today's Schedule List */}
         {isLoading ? (
           <div className="space-y-2">
-            <div className="h-12 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg" />
-            <div className="h-12 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg" />
+            <div className="h-12 bg-secondary animate-pulse rounded-xl" />
+            <div className="h-12 bg-secondary animate-pulse rounded-xl" />
           </div>
         ) : todayPlans.length === 0 ? (
           <EmptyState
@@ -128,8 +126,8 @@ export const TodayPlansCard: React.FC<TodayPlansCardProps> = ({
             description="Your schedule is open today! Create a date or activity together."
             action={
               onCreatePlan && (
-                <Button onClick={onCreatePlan} size="sm" variant="outline" className="text-pink-600 border-pink-300">
-                  <Plus className="w-4 h-4 mr-1" /> Add Today's Plan
+                <Button onClick={onCreatePlan} size="sm" variant="outline">
+                  <Plus className="w-3.5 h-3.5 mr-1" /> Add Today's Plan
                 </Button>
               )
             }
@@ -139,28 +137,28 @@ export const TodayPlansCard: React.FC<TodayPlansCardProps> = ({
             {todayPlans.map((plan) => (
               <motion.div
                 key={plan.id}
-                initial={{ opacity: 0, x: -10 }}
+                initial={{ opacity: 0, x: -6 }}
                 animate={{ opacity: 1, x: 0 }}
                 className={`p-3 rounded-xl border flex items-center justify-between transition-colors ${
                   plan.completed
-                    ? 'bg-gray-50 dark:bg-gray-800/40 border-gray-200 dark:border-gray-800 opacity-60'
-                    : 'bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 hover:border-pink-200'
+                    ? 'bg-secondary/20 border-border opacity-60'
+                    : 'bg-secondary/40 border-border hover:bg-secondary/70'
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className="w-3 h-3 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: plan.color || '#ec4899' }}
+                    className="w-2.5 h-2.5 rounded-full shrink-0"
+                    style={{ backgroundColor: plan.color || 'var(--primary)' }}
                   />
                   <div>
                     <h5
-                      className={`text-sm font-semibold ${
-                        plan.completed ? 'line-through text-gray-500' : 'text-gray-900 dark:text-white'
+                      className={`text-xs font-semibold ${
+                        plan.completed ? 'line-through text-muted-foreground' : 'text-foreground'
                       }`}
                     >
                       {plan.title}
                     </h5>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
                       <span>
                         {formatTime(plan.startAt)} - {formatTime(plan.endAt)}
                       </span>
@@ -174,7 +172,7 @@ export const TodayPlansCard: React.FC<TodayPlansCardProps> = ({
                   </div>
                 </div>
 
-                {plan.completed && <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />}
+                {plan.completed && <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />}
               </motion.div>
             ))}
           </div>
@@ -183,3 +181,4 @@ export const TodayPlansCard: React.FC<TodayPlansCardProps> = ({
     </Card>
   );
 };
+

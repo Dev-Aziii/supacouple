@@ -16,21 +16,22 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   action,
 }) => {
   return (
-    <Card className="border-dashed border-pink-200 bg-pink-50/30 text-center py-6">
-      <CardContent className="flex flex-col items-center justify-center p-4">
-        <div className="w-12 h-12 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center mb-3">
-          <Icon className="w-6 h-6" />
+    <Card className="border-dashed border-border bg-secondary/20 text-center py-4 shadow-none">
+      <CardContent className="flex flex-col items-center justify-center p-3">
+        <div className="w-8 h-8 rounded-full bg-secondary text-muted-foreground flex items-center justify-center mb-2 border border-border">
+          <Icon className="w-4 h-4" />
         </div>
-        <h3 className="text-base font-semibold text-gray-900 mb-1">{title}</h3>
-        <p className="text-sm text-gray-500 max-w-sm mb-4">{description}</p>
+        <h3 className="text-xs font-semibold text-foreground mb-0.5">{title}</h3>
+        <p className="text-[11px] text-muted-foreground max-w-xs mb-3">{description}</p>
         {action && <div>{action}</div>}
       </CardContent>
     </Card>
   );
 };
 
-export const SkeletonCard: React.FC<{ height?: string }> = ({ height = 'h-32' }) => {
+export const SkeletonCard: React.FC<{ height?: string }> = ({ height = 'h-24' }) => {
   return (
-    <div className={`w-full ${height} bg-gray-100 animate-pulse rounded-xl border border-gray-200`} />
+    <div className={`w-full ${height} bg-secondary animate-pulse rounded-xl border border-border`} />
   );
 };
+

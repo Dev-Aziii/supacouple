@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BellRing, Gift, UserPlus, Check, X } from 'lucide-react';
+import { BellRing, HeartHandshake, UserPlus, Check, X } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { SpontaneousProposal } from '@/types/proposal';
@@ -31,15 +31,15 @@ export const PendingItemsCard: React.FC<PendingItemsCardProps> = ({
   const totalPending = proposals.length + invitations.length + notifications.length;
 
   if (!isLoading && totalPending === 0) {
-    return null; // Hide card when no pending items to keep dashboard clean
+    return null;
   }
 
   return (
-    <Card className="border-amber-200 dark:border-amber-900/40 bg-amber-50/20 dark:bg-amber-950/10 shadow-sm">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-lg font-bold flex items-center gap-2 text-gray-900 dark:text-white">
-          <BellRing className="w-5 h-5 text-amber-500" />
-          Pending Items ({totalPending})
+    <Card className="border-l-4 border-l-primary">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
+          <BellRing className="w-4 h-4 text-primary" />
+          <span>Pending Action ({totalPending})</span>
         </CardTitle>
       </CardHeader>
 
@@ -48,22 +48,22 @@ export const PendingItemsCard: React.FC<PendingItemsCardProps> = ({
         {proposals.map((proposal) => (
           <motion.div
             key={proposal.id}
-            initial={{ opacity: 0, y: 5 }}
+            initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-3 bg-white dark:bg-gray-900 rounded-xl border border-amber-200 dark:border-amber-900/40 shadow-xs flex items-center justify-between gap-2"
+            className="p-3.5 bg-secondary/40 rounded-xl border border-border flex items-center justify-between gap-3"
           >
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-600 flex items-center justify-center flex-shrink-0">
-                <Gift className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                <HeartHandshake className="w-4 h-4" />
               </div>
               <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-600">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                   Date Proposal
                 </span>
-                <h5 className="text-sm font-bold text-gray-900 dark:text-white line-clamp-1">
+                <h5 className="text-sm font-semibold text-foreground line-clamp-1">
                   {proposal.title}
                 </h5>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   {proposal.proposedTime
                     ? `For ${new Date(proposal.proposedTime).toLocaleDateString()}`
                     : 'Pending date'}
@@ -71,12 +71,12 @@ export const PendingItemsCard: React.FC<PendingItemsCardProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 flex-shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               {onAcceptProposal && (
                 <Button
                   onClick={() => onAcceptProposal(proposal.id)}
                   size="sm"
-                  className="bg-green-500 hover:bg-green-600 text-white rounded-full h-8 px-3 text-xs"
+                  className="h-8 px-3 text-xs"
                 >
                   <Check className="w-3.5 h-3.5 mr-1" /> Accept
                 </Button>
@@ -86,7 +86,7 @@ export const PendingItemsCard: React.FC<PendingItemsCardProps> = ({
                   onClick={() => onDeclineProposal(proposal.id)}
                   size="sm"
                   variant="outline"
-                  className="border-gray-200 rounded-full h-8 px-2 text-xs text-gray-500"
+                  className="h-8 px-2 text-xs"
                 >
                   <X className="w-3.5 h-3.5" />
                 </Button>
@@ -99,17 +99,17 @@ export const PendingItemsCard: React.FC<PendingItemsCardProps> = ({
         {invitations.map((invite) => (
           <div
             key={invite.id}
-            className="p-3 bg-white dark:bg-gray-900 rounded-xl border border-pink-200 dark:border-pink-900/40 shadow-xs flex items-center justify-between"
+            className="p-3.5 bg-secondary/40 rounded-xl border border-border flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center">
-                <UserPlus className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                <UserPlus className="w-4 h-4" />
               </div>
               <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-pink-600">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                   Partner Invitation
                 </span>
-                <h5 className="text-sm font-bold text-gray-900 dark:text-white">
+                <h5 className="text-sm font-semibold text-foreground">
                   Invitation Code: {invite.inviteCode}
                 </h5>
               </div>
@@ -121,14 +121,14 @@ export const PendingItemsCard: React.FC<PendingItemsCardProps> = ({
         {notifications.slice(0, 3).map((notif) => (
           <div
             key={notif.id}
-            className="p-3 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 shadow-xs flex items-center justify-between"
+            className="p-3.5 bg-secondary/40 rounded-xl border border-border flex items-center justify-between"
           >
             <div>
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-pink-500">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">
                 {notif.type}
               </span>
-              <h5 className="text-xs font-bold text-gray-900 dark:text-white">{notif.title}</h5>
-              <p className="text-xs text-gray-500 line-clamp-1">{notif.body}</p>
+              <h5 className="text-xs font-semibold text-foreground">{notif.title}</h5>
+              <p className="text-xs text-muted-foreground line-clamp-1">{notif.body}</p>
             </div>
           </div>
         ))}
@@ -136,3 +136,4 @@ export const PendingItemsCard: React.FC<PendingItemsCardProps> = ({
     </Card>
   );
 };
+
