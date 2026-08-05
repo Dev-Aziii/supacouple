@@ -1,20 +1,20 @@
 import React from 'react';
 import { AuthCard } from '@/components/auth/AuthCard';
 import { AuthHeader } from '@/components/auth/AuthHeader';
-import { RegisterForm } from '@/components/auth/RegisterForm';
+import { ResetPasswordForm } from '@/components/auth/ResetPasswordForm';
 
-export const RegisterPage: React.FC = () => {
+export const ResetPasswordPage: React.FC = () => {
   return (
     <div className="flex w-full items-center justify-center min-h-[calc(100vh-8rem)] py-8 px-4 sm:px-6">
       <AuthCard>
         <AuthHeader
-          title="Create Account"
-          subtitle="Start your shared couple journey together"
+          title="Reset Password"
+          subtitle="Choose a new password for your account"
         />
-        <RegisterForm />
+        <ResetPasswordForm />
       </AuthCard>
     </div>
   );
 };
 
-export default RegisterPage;
+export default ResetPasswordPage;

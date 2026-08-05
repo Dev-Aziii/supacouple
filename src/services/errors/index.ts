@@ -63,3 +63,39 @@ export function normalizeError(error: unknown): AppError {
 
   return new UnknownError(String(error), error);
 }
+
+/**
+ * Maps raw Supabase or system error messages to user-friendly messages.
+ */
+export function getFriendlyErrorMessage(error: unknown): string {
+  const normalized = normalizeError(error);
+  const msg = normalized.message || '';
+
+  if (msg.includes('Invalid login credentials')) {
+    return 'Invalid email or password. Please check your credentials and try again.';
+  }
+  if (msg.includes('User already registered') || msg.includes('user_already_exists')) {
+    return 'An account with this email address already exists. Try signing in instead.';
+  }
+  if (msg.includes('Email not confirmed')) {
+    return 'Your email address is not verified yet. Please check your inbox for the confirmation email.';
+  }
+  if (msg.includes('Password should be at least')) {
+    return 'Password must be at least 6 characters long.';
+  }
+  if (msg.includes('rate limit') || msg.includes('over_email_send_rate_limit')) {
+    return 'Too many requests. Please wait a few minutes before trying again.';
+  }
+  if (msg.includes('Auth session missing') || msg.includes('JWT expired')) {
+    return 'Your session has expired. Please sign in again.';
+  }
+  if (msg.includes('Network failure') || normalized instanceof NetworkError) {
+    return 'Network connection error. Please check your internet connection.';
+  }
+
+  // Fallback to normalized message if it's already a clean string, otherwise generic error
+  return normalized.message && !normalized.message.includes('{') && normalized.message.length < 150
+    ? normalized.message
+    : 'An unexpected error occurred. Please try again.';
+}
+

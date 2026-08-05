@@ -12,7 +12,54 @@ export type Database = {
   };
   public: {
     Tables: {
-      [_ in never]: never;
+      profiles: {
+        Row: {
+          id: string;
+          email: string;
+          display_name: string;
+          avatar_url: string | null;
+          relationship_status: string;
+          partner_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          email: string;
+          display_name?: string;
+          avatar_url?: string | null;
+          relationship_status?: string;
+          partner_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          display_name?: string;
+          avatar_url?: string | null;
+          relationship_status?: string;
+          partner_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey";
+            columns: ["id"];
+            isOneToOne: true;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "profiles_partner_id_fkey";
+            columns: ["partner_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
