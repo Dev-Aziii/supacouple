@@ -433,6 +433,87 @@ export type Database = {
           },
         ];
       };
+      activities: {
+        Row: {
+          id: string;
+          couple_id: string;
+          user_id: string;
+          type: string;
+          title: string;
+          description: string | null;
+          metadata: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          couple_id: string;
+          user_id: string;
+          type: string;
+          title: string;
+          description?: string | null;
+          metadata?: Json;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          couple_id?: string;
+          user_id?: string;
+          type?: string;
+          title?: string;
+          description?: string | null;
+          metadata?: Json;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "activities_couple_id_fkey";
+            columns: ["couple_id"];
+            isOneToOne: false;
+            referencedRelation: "couples";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "activities_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      user_activity_views: {
+        Row: {
+          activity_id: string;
+          user_id: string;
+          viewed_at: string;
+        };
+        Insert: {
+          activity_id: string;
+          user_id: string;
+          viewed_at?: string;
+        };
+        Update: {
+          activity_id?: string;
+          user_id?: string;
+          viewed_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "user_activity_views_activity_id_fkey";
+            columns: ["activity_id"];
+            isOneToOne: false;
+            referencedRelation: "activities";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "user_activity_views_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;

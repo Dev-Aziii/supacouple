@@ -36,4 +36,12 @@ export const queryKeys = {
     all: ['settings'] as const,
     user: (userId: string) => [...queryKeys.settings.all, userId] as const,
   },
+  activities: {
+    all: ['activities'] as const,
+    feed: (coupleId: string) => [...queryKeys.activities.all, 'feed', coupleId] as const,
+  },
+  dashboard: {
+    all: ['dashboard'] as const,
+    stats: (coupleId: string) => [...queryKeys.dashboard.all, 'stats', coupleId] as const,
+  },
 } as const;

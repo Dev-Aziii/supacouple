@@ -6,3 +6,4 @@ export * from './proposalRepository';
 export * from './statusRepository';
 export * from './memoryRepository';
 export * from './notificationRepository';
+export * from './activitiesRepository';
