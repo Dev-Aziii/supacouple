@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Heart, Calendar, Send, User, Settings, LogIn, UserPlus } from 'lucide-react';
+import { LayoutDashboard, Heart, Calendar, Send, Camera, Clock, User, Settings, LogIn, UserPlus } from 'lucide-react';
 import { AppLogo } from '@/components/common/AppLogo';
 import { ROUTES } from '@/constants/routes';
 import { cn } from '@/utils/cn';
@@ -12,6 +12,8 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ variant = 'main' }) => {
   const navItems = [
     { to: ROUTES.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard },
+    { to: ROUTES.GALLERY, label: 'Memories', icon: Camera },
+    { to: ROUTES.TIMELINE, label: 'Timeline', icon: Clock },
     { to: ROUTES.PAIR, label: 'Pairing', icon: Heart },
     { to: ROUTES.PLANS, label: 'Plans', icon: Calendar },
     { to: ROUTES.PROPOSAL, label: 'Proposals', icon: Send },

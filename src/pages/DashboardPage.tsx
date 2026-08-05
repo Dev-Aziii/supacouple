@@ -13,6 +13,7 @@ import {
   PartnerHeroCard,
   TodayPlansCard,
   UpcomingPlansCard,
+  DashboardMemoriesCard,
   PendingItemsCard,
   ActivityFeed,
   RelationshipSummary,
@@ -128,7 +129,7 @@ export const DashboardPage: React.FC = () => {
         onCreatePlan={() => navigate(ROUTES.PLANS)}
         onInvitePartner={() => navigate(ROUTES.PAIR)}
         onCreateProposal={() => navigate(ROUTES.PROPOSAL)}
-        onAddMemory={() => navigate(ROUTES.PLANS)}
+        onAddMemory={() => navigate(ROUTES.GALLERY)}
         isPaired={isPaired}
       />
 
@@ -202,6 +203,11 @@ export const DashboardPage: React.FC = () => {
           <UpcomingPlansCard
             upcomingPlans={upcomingPlans}
             onViewCalendar={() => navigate(ROUTES.CALENDAR)}
+          />
+
+          <DashboardMemoriesCard
+            coupleId={couple?.id}
+            onAddMemory={() => navigate(ROUTES.GALLERY)}
           />
 
           <StatisticsCard stats={stats} isLoading={isStatsLoading} />

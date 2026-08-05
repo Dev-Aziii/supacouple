@@ -116,37 +116,76 @@ export type Database = {
       };
       memories: {
         Row: {
-          caption: string | null;
-          couple_id: string;
-          created_at: string;
           id: string;
-          image_url: string;
-          memory_date: string;
+          couple_id: string;
+          created_by: string;
+          uploaded_by?: string;
           title: string;
+          caption: string | null;
+          description: string | null;
+          image_url: string;
+          cover_image: string | null;
+          media_urls: string[];
+          memory_date: string;
+          location: string | null;
+          latitude: number | null;
+          longitude: number | null;
+          album_id: string | null;
+          is_favorite: boolean;
+          is_private: boolean;
+          visibility: string;
+          weather: string | null;
+          tags: string[];
+          created_at: string;
           updated_at: string;
-          uploaded_by: string;
         };
         Insert: {
-          caption?: string | null;
-          couple_id: string;
-          created_at?: string;
           id?: string;
-          image_url: string;
-          memory_date?: string;
+          couple_id: string;
+          created_by: string;
+          uploaded_by?: string;
           title: string;
+          caption?: string | null;
+          description?: string | null;
+          image_url?: string;
+          cover_image?: string | null;
+          media_urls?: string[];
+          memory_date?: string;
+          location?: string | null;
+          latitude?: number | null;
+          longitude?: number | null;
+          album_id?: string | null;
+          is_favorite?: boolean;
+          is_private?: boolean;
+          visibility?: string;
+          weather?: string | null;
+          tags?: string[];
+          created_at?: string;
           updated_at?: string;
-          uploaded_by: string;
         };
         Update: {
-          caption?: string | null;
-          couple_id?: string;
-          created_at?: string;
           id?: string;
-          image_url?: string;
-          memory_date?: string;
-          title?: string;
-          updated_at?: string;
+          couple_id?: string;
+          created_by?: string;
           uploaded_by?: string;
+          title?: string;
+          caption?: string | null;
+          description?: string | null;
+          image_url?: string;
+          cover_image?: string | null;
+          media_urls?: string[];
+          memory_date?: string;
+          location?: string | null;
+          latitude?: number | null;
+          longitude?: number | null;
+          album_id?: string | null;
+          is_favorite?: boolean;
+          is_private?: boolean;
+          visibility?: string;
+          weather?: string | null;
+          tags?: string[];
+          created_at?: string;
+          updated_at?: string;
         };
         Relationships: [
           {
@@ -157,10 +196,181 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "memories_uploaded_by_fkey";
-            columns: ["uploaded_by"];
+            foreignKeyName: "memories_created_by_fkey";
+            columns: ["created_by"];
             isOneToOne: false;
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "memories_album_id_fkey";
+            columns: ["album_id"];
+            isOneToOne: false;
+            referencedRelation: "memory_albums";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      memory_albums: {
+        Row: {
+          id: string;
+          couple_id: string;
+          title: string;
+          description: string | null;
+          cover_image: string | null;
+          created_by: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          couple_id: string;
+          title: string;
+          description?: string | null;
+          cover_image?: string | null;
+          created_by: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          couple_id?: string;
+          title?: string;
+          description?: string | null;
+          cover_image?: string | null;
+          created_by?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "memory_albums_couple_id_fkey";
+            columns: ["couple_id"];
+            isOneToOne: false;
+            referencedRelation: "couples";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      memory_comments: {
+        Row: {
+          id: string;
+          memory_id: string;
+          parent_comment_id: string | null;
+          user_id: string;
+          content: string;
+          edited: boolean;
+          deleted_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          memory_id: string;
+          parent_comment_id?: string | null;
+          user_id: string;
+          content: string;
+          edited?: boolean;
+          deleted_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          memory_id?: string;
+          parent_comment_id?: string | null;
+          user_id?: string;
+          content?: string;
+          edited?: boolean;
+          deleted_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "memory_comments_memory_id_fkey";
+            columns: ["memory_id"];
+            isOneToOne: false;
+            referencedRelation: "memories";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      memory_reactions: {
+        Row: {
+          id: string;
+          memory_id: string;
+          user_id: string;
+          emoji: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          memory_id: string;
+          user_id: string;
+          emoji: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          memory_id?: string;
+          user_id?: string;
+          emoji?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "memory_reactions_memory_id_fkey";
+            columns: ["memory_id"];
+            isOneToOne: false;
+            referencedRelation: "memories";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      relationship_milestones: {
+        Row: {
+          id: string;
+          couple_id: string;
+          title: string;
+          description: string | null;
+          date: string;
+          type: string;
+          cover_image: string | null;
+          created_by: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          couple_id: string;
+          title: string;
+          description?: string | null;
+          date: string;
+          type?: string;
+          cover_image?: string | null;
+          created_by: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          couple_id?: string;
+          title?: string;
+          description?: string | null;
+          date?: string;
+          type?: string;
+          cover_image?: string | null;
+          created_by?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "relationship_milestones_couple_id_fkey";
+            columns: ["couple_id"];
+            isOneToOne: false;
+            referencedRelation: "couples";
             referencedColumns: ["id"];
           },
         ];

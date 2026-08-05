@@ -13,6 +13,8 @@ import { DashboardPage } from '@/pages/DashboardPage';
 import { PairPartnerPage } from '@/pages/PairPartnerPage';
 import { PlansPage } from '@/pages/PlansPage';
 import { ProposalPage } from '@/pages/ProposalPage';
+import { GalleryPage } from '@/pages/GalleryPage';
+import { TimelinePage } from '@/pages/TimelinePage';
 import { ProfilePage } from '@/pages/ProfilePage';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
@@ -79,6 +81,18 @@ export const router = createBrowserRouter([
           {
             path: ROUTES.PROPOSAL,
             element: <ProposalPage />,
+          },
+          {
+            path: ROUTES.MEMORIES,
+            element: <GalleryPage />,
+          },
+          {
+            path: ROUTES.GALLERY,
+            element: <GalleryPage />,
+          },
+          {
+            path: ROUTES.TIMELINE,
+            element: <TimelinePage />,
           },
           {
             path: ROUTES.PROFILE,

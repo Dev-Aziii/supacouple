@@ -9,4 +9,5 @@ export * from './ActivityFeed';
 export * from './RelationshipSummary';
 export * from './StatisticsCard';
 export * from './QuickActions';
+export * from './DashboardMemoriesCard';
 export * from './EmptyState';

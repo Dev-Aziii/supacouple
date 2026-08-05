@@ -9,6 +9,7 @@ export interface IStatusRepository {
   getLatestStatus(userId: string): Promise<StatusUpdate | null>;
   getPartnerStatus(partnerId: string): Promise<StatusUpdate | null>;
   getStatusHistory(userId: string, limit?: number): Promise<StatusUpdate[]>;
+  getByCoupleId(coupleId: string, limit?: number): Promise<StatusUpdate[]>;
   createStatus(status: Omit<StatusUpdate, 'id' | 'updatedAt'> & { coupleId?: string; emoji?: string; expiresAt?: string | null }): Promise<StatusUpdate>;
   updateStatus(id: string, updates: Partial<StatusUpdate>): Promise<StatusUpdate>;
   deleteStatus(id: string): Promise<boolean>;
@@ -68,6 +69,23 @@ export class StatusRepository implements IStatusRepository {
       return (data || []).map((row) => this.mapRow(row));
     } catch (err) {
       console.error('[StatusRepository] getStatusHistory error:', err);
+      return [];
+    }
+  }
+
+  async getByCoupleId(coupleId: string, limit = 50): Promise<StatusUpdate[]> {
+    try {
+      const { data, error } = await supabase
+        .from('statuses')
+        .select('*')
+        .eq('couple_id', coupleId)
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      if (error) throw normalizeError(error);
+      return (data || []).map((row) => this.mapRow(row));
+    } catch (err) {
+      console.error('[StatusRepository] getByCoupleId error:', err);
       return [];
     }
   }
