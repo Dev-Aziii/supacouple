@@ -17,6 +17,7 @@ export interface Couple {
 export interface ICouplesRepository {
   getById(id: string): Promise<Couple | null>;
   getByUserId(userId: string): Promise<Couple | null>;
+  getActiveCoupleForUser(userId: string, partnerId?: string | null): Promise<Couple | null>;
   create(couple: { relationshipName: string; anniversary?: string; createdBy: string }): Promise<Couple>;
   update(id: string, updates: Partial<Couple>): Promise<Couple>;
 }
@@ -57,6 +58,8 @@ export class CouplesRepository implements ICouplesRepository {
         .from('couples')
         .select('*')
         .eq('created_by', userId)
+        .order('created_at', { ascending: false })
+        .limit(1)
         .maybeSingle();
 
       if (error) throw normalizeError(error);
@@ -64,6 +67,29 @@ export class CouplesRepository implements ICouplesRepository {
       return this.mapRow(data);
     } catch (err) {
       console.error('[CouplesRepository] getByUserId error:', err);
+      return null;
+    }
+  }
+
+  async getActiveCoupleForUser(userId: string, partnerId?: string | null): Promise<Couple | null> {
+    try {
+      const userIds = [userId];
+      if (partnerId) userIds.push(partnerId);
+
+      const { data, error } = await supabase
+        .from('couples')
+        .select('*')
+        .in('created_by', userIds)
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) throw normalizeError(error);
+      if (!data) return null;
+      return this.mapRow(data);
+    } catch (err) {
+      console.error('[CouplesRepository] getActiveCoupleForUser error:', err);
       return null;
     }
   }

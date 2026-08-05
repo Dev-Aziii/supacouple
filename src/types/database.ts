@@ -430,6 +430,14 @@ export type Database = {
     };
     Functions: {
       is_member_of_couple: { Args: { c_id: string }; Returns: boolean };
+      accept_couple_invite: {
+        Args: { p_invite_code: string; p_user_id: string; p_anniversary?: string | null };
+        Returns: { couple_id?: string; sender_id?: string; receiver_id?: string; status?: string };
+      };
+      leave_relationship: {
+        Args: { p_user_id: string };
+        Returns: { user_id?: string; former_partner_id?: string; couple_id?: string; status?: string };
+      };
     };
     Enums: {
       [_ in never]: never;

@@ -21,8 +21,11 @@ export interface Invitation {
 export interface IInvitationsRepository {
   getByCode(code: string): Promise<Invitation | null>;
   getByEmail(email: string): Promise<Invitation[]>;
+  getPendingBySender(senderId: string): Promise<Invitation[]>;
+  getPendingForUser(email: string, userId: string): Promise<Invitation[]>;
   create(invitation: { inviteCode: string; email: string; senderId: string; coupleId?: string; expiresAt: string }): Promise<Invitation>;
   updateStatus(id: string, status: Invitation['status'], receiverId?: string): Promise<Invitation>;
+  cancelInvitation(id: string): Promise<Invitation>;
 }
 
 export class InvitationsRepository implements IInvitationsRepository {
@@ -47,7 +50,7 @@ export class InvitationsRepository implements IInvitationsRepository {
       const { data, error } = await supabase
         .from('invitations')
         .select('*')
-        .eq('invite_code', code)
+        .eq('invite_code', code.trim().toUpperCase())
         .maybeSingle();
 
       if (error) throw normalizeError(error);
@@ -64,7 +67,7 @@ export class InvitationsRepository implements IInvitationsRepository {
       const { data, error } = await supabase
         .from('invitations')
         .select('*')
-        .eq('email', email)
+        .eq('email', email.trim().toLowerCase())
         .order('created_at', { ascending: false });
 
       if (error) throw normalizeError(error);
@@ -75,11 +78,48 @@ export class InvitationsRepository implements IInvitationsRepository {
     }
   }
 
+  async getPendingBySender(senderId: string): Promise<Invitation[]> {
+    try {
+      const { data, error } = await supabase
+        .from('invitations')
+        .select('*')
+        .eq('sender_id', senderId)
+        .eq('status', 'pending')
+        .gt('expires_at', new Date().toISOString())
+        .order('created_at', { ascending: false });
+
+      if (error) throw normalizeError(error);
+      return (data || []).map((row) => this.mapRow(row));
+    } catch (err) {
+      console.error('[InvitationsRepository] getPendingBySender error:', err);
+      return [];
+    }
+  }
+
+  async getPendingForUser(email: string, userId: string): Promise<Invitation[]> {
+    try {
+      const { data, error } = await supabase
+        .from('invitations')
+        .select('*')
+        .or(`email.eq.${email.trim().toLowerCase()},receiver_id.eq.${userId}`)
+        .eq('status', 'pending')
+        .neq('sender_id', userId)
+        .gt('expires_at', new Date().toISOString())
+        .order('created_at', { ascending: false });
+
+      if (error) throw normalizeError(error);
+      return (data || []).map((row) => this.mapRow(row));
+    } catch (err) {
+      console.error('[InvitationsRepository] getPendingForUser error:', err);
+      return [];
+    }
+  }
+
   async create(invitation: { inviteCode: string; email: string; senderId: string; coupleId?: string; expiresAt: string }): Promise<Invitation> {
     try {
       const payload: Database['public']['Tables']['invitations']['Insert'] = {
-        invite_code: invitation.inviteCode,
-        email: invitation.email,
+        invite_code: invitation.inviteCode.trim().toUpperCase(),
+        email: invitation.email.trim().toLowerCase(),
         sender_id: invitation.senderId,
         couple_id: invitation.coupleId || null,
         expires_at: invitation.expiresAt,
@@ -121,6 +161,10 @@ export class InvitationsRepository implements IInvitationsRepository {
       console.error('[InvitationsRepository] updateStatus error:', err);
       throw normalizeError(err);
     }
+  }
+
+  async cancelInvitation(id: string): Promise<Invitation> {
+    return this.updateStatus(id, 'cancelled');
   }
 }
 

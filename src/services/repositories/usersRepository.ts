@@ -5,6 +5,7 @@ import type { Database } from '../../types/database';
 
 export interface IUsersRepository {
   getById(id: string): Promise<UserProfile | null>;
+  getByEmail(email: string): Promise<UserProfile | null>;
   getCurrentProfile(): Promise<UserProfile | null>;
   createProfile(profile: Omit<UserProfile, 'createdAt' | 'updatedAt'>): Promise<UserProfile>;
   updateProfile(id: string, updates: Partial<UserProfile>): Promise<UserProfile>;
@@ -38,6 +39,24 @@ export class UsersRepository implements IUsersRepository {
       return this.mapRow(data);
     } catch (err) {
       console.error('[UsersRepository] getById error:', err);
+      return null;
+    }
+  }
+
+  async getByEmail(email: string): Promise<UserProfile | null> {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('email', email.trim().toLowerCase())
+        .maybeSingle();
+
+      if (error) throw normalizeError(error);
+      if (!data) return null;
+
+      return this.mapRow(data);
+    } catch (err) {
+      console.error('[UsersRepository] getByEmail error:', err);
       return null;
     }
   }

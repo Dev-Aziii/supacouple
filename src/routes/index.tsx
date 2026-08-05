@@ -10,6 +10,7 @@ import { RegisterPage } from '@/pages/RegisterPage';
 import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage';
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage';
 import { DashboardPage } from '@/pages/DashboardPage';
+import { PairPartnerPage } from '@/pages/PairPartnerPage';
 import { PlansPage } from '@/pages/PlansPage';
 import { ProposalPage } from '@/pages/ProposalPage';
 import { ProfilePage } from '@/pages/ProfilePage';
@@ -62,6 +63,10 @@ export const router = createBrowserRouter([
           {
             path: ROUTES.DASHBOARD,
             element: <DashboardPage />,
+          },
+          {
+            path: ROUTES.PAIR,
+            element: <PairPartnerPage />,
           },
           {
             path: ROUTES.PLANS,
