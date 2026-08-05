@@ -18,7 +18,8 @@ import { useSession } from '@/hooks/useSession';
 import { useSignOut } from '@/hooks/useSignOut';
 import { useCouple } from '@/hooks/useCouple';
 import { useStatus } from '@/hooks/useStatus';
-import { usePlansQuery, useProposalsQuery } from '@/hooks/useSupabaseQueries';
+import { useRealtimePlans } from '@/hooks/useRealtimePlans';
+import { useProposalsQuery } from '@/hooks/useSupabaseQueries';
 import { calculateRelationshipDays, formatAnniversary } from '@/utils/relationship';
 import { Button } from '@/components/ui/button';
 import { ButtonSpinner } from '@/components/ui/ButtonSpinner';
@@ -60,7 +61,7 @@ export const DashboardPage: React.FC = () => {
   } = useStatus();
 
   const coupleId = couple?.id;
-  const { data: plans = [], isLoading: isPlansLoading } = usePlansQuery(coupleId);
+  const { todayPlans, isTodayPlansLoading } = useRealtimePlans();
   const { data: proposals = [], isLoading: isProposalsLoading } = useProposalsQuery(coupleId);
 
   const [isPickerOpen, setIsPickerOpen] = useState(false);
@@ -234,9 +235,9 @@ export const DashboardPage: React.FC = () => {
               </CardHeader>
 
               <CardContent className="space-y-3">
-                {isPlansLoading ? (
+                {isTodayPlansLoading ? (
                   <div className="p-3 bg-muted/30 rounded-xl animate-pulse h-16" />
-                ) : plans.length === 0 ? (
+                ) : todayPlans.length === 0 ? (
                   <div className="p-4 rounded-2xl bg-muted/20 border border-dashed border-border text-center space-y-2">
                     <p className="text-xs text-muted-foreground">No plans scheduled for today.</p>
                     <Button
@@ -250,7 +251,7 @@ export const DashboardPage: React.FC = () => {
                     </Button>
                   </div>
                 ) : (
-                  plans.slice(0, 3).map((plan) => (
+                  todayPlans.slice(0, 3).map((plan) => (
                     <div
                       key={plan.id}
                       className="p-3 rounded-xl bg-muted/30 border border-border/40 flex items-center justify-between gap-3 text-xs"
@@ -262,7 +263,7 @@ export const DashboardPage: React.FC = () => {
                         )}
                       </div>
                       <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 font-semibold shrink-0">
-                        {new Date(plan.scheduledDate || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {new Date(plan.startAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
                   ))

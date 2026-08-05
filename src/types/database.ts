@@ -217,6 +217,7 @@ export type Database = {
       };
       plans: {
         Row: {
+          category: string;
           color: string;
           completed: boolean;
           couple_id: string;
@@ -227,11 +228,14 @@ export type Database = {
           id: string;
           location: string | null;
           priority: string;
+          reminder_minutes: number | null;
+          repeat: string;
           start_at: string;
           title: string;
           updated_at: string;
         };
         Insert: {
+          category?: string;
           color?: string;
           completed?: boolean;
           couple_id: string;
@@ -242,11 +246,14 @@ export type Database = {
           id?: string;
           location?: string | null;
           priority?: string;
+          reminder_minutes?: number | null;
+          repeat?: string;
           start_at: string;
-          title?: string;
+          title: string;
           updated_at?: string;
         };
         Update: {
+          category?: string;
           color?: string;
           completed?: boolean;
           couple_id?: string;
@@ -257,6 +264,8 @@ export type Database = {
           id?: string;
           location?: string | null;
           priority?: string;
+          reminder_minutes?: number | null;
+          repeat?: string;
           start_at?: string;
           title?: string;
           updated_at?: string;

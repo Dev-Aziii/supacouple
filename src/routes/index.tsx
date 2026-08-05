@@ -73,6 +73,10 @@ export const router = createBrowserRouter([
             element: <PlansPage />,
           },
           {
+            path: ROUTES.CALENDAR,
+            element: <PlansPage />,
+          },
+          {
             path: ROUTES.PROPOSAL,
             element: <ProposalPage />,
           },

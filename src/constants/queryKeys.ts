@@ -18,6 +18,9 @@ export const queryKeys = {
     all: ['plans'] as const,
     lists: () => [...queryKeys.plans.all, 'list'] as const,
     detail: (id: string) => [...queryKeys.plans.all, 'detail', id] as const,
+    month: (coupleId: string, year: number, month: number) => [...queryKeys.plans.all, 'month', coupleId, year, month] as const,
+    upcoming: (coupleId: string) => [...queryKeys.plans.all, 'upcoming', coupleId] as const,
+    today: (coupleId: string) => [...queryKeys.plans.all, 'today', coupleId] as const,
   },
   proposals: {
     all: ['proposals'] as const,

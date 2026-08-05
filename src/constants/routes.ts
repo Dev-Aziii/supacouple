@@ -10,6 +10,7 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   PAIR: '/pair',
   PLANS: '/plans',
+  CALENDAR: '/calendar',
   PROPOSAL: '/proposal',
   PROFILE: '/profile',
   SETTINGS: '/settings',
