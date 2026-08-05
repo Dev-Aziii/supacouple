@@ -17,6 +17,7 @@ import { GalleryPage } from '@/pages/GalleryPage';
 import { TimelinePage } from '@/pages/TimelinePage';
 import { ProfilePage } from '@/pages/ProfilePage';
 import { SettingsPage } from '@/pages/SettingsPage';
+import { NotificationsPage } from '@/pages/NotificationsPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { ROUTES } from '@/constants/routes';
 
@@ -101,6 +102,10 @@ export const router = createBrowserRouter([
           {
             path: ROUTES.SETTINGS,
             element: <SettingsPage />,
+          },
+          {
+            path: ROUTES.NOTIFICATIONS,
+            element: <NotificationsPage />,
           },
         ],
       },

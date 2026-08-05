@@ -17,6 +17,7 @@ export const ROUTES = {
   TIMELINE: '/timeline',
   PROFILE: '/profile',
   SETTINGS: '/settings',
+  NOTIFICATIONS: '/notifications',
   NOT_FOUND: '*',
 } as const;
 

@@ -100,6 +100,48 @@ export class AuthService {
       return { data: null, error: normalizeError(err) };
     }
   }
+
+  /**
+   * Update user email address.
+   */
+  async updateEmail(newEmail: string): Promise<AuthResponse<null>> {
+    try {
+      const { error } = await supabase.auth.updateUser({ email: newEmail });
+      if (error) throw normalizeError(error);
+      return { data: null, error: null };
+    } catch (err) {
+      return { data: null, error: normalizeError(err) };
+    }
+  }
+
+  /**
+   * Update user password.
+   */
+  async updatePassword(newPassword: string): Promise<AuthResponse<null>> {
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw normalizeError(error);
+      return { data: null, error: null };
+    } catch (err) {
+      return { data: null, error: normalizeError(err) };
+    }
+  }
+
+  /**
+   * Delete current user profile and account.
+   */
+  async deleteAccount(): Promise<AuthResponse<null>> {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not found');
+      const { error } = await supabase.from('profiles').delete().eq('id', user.id);
+      if (error) throw normalizeError(error);
+      await supabase.auth.signOut();
+      return { data: null, error: null };
+    } catch (err) {
+      return { data: null, error: normalizeError(err) };
+    }
+  }
 }
 
 export const authService = new AuthService();

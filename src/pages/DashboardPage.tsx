@@ -20,6 +20,7 @@ import {
   StatisticsCard,
   QuickActions,
 } from '@/components/dashboard';
+import { RecentNotificationsWidget } from '@/components/dashboard/RecentNotificationsWidget';
 import { PRESET_STATUSES, PresetStatusConfig, PresetStatusType } from '@/types/status';
 import { ROUTES } from '@/constants/routes';
 
@@ -130,6 +131,7 @@ export const DashboardPage: React.FC = () => {
         onInvitePartner={() => navigate(ROUTES.PAIR)}
         onCreateProposal={() => navigate(ROUTES.PROPOSAL)}
         onAddMemory={() => navigate(ROUTES.GALLERY)}
+        onOpenSettings={() => navigate(ROUTES.SETTINGS)}
         isPaired={isPaired}
       />
 
@@ -213,8 +215,10 @@ export const DashboardPage: React.FC = () => {
           <StatisticsCard stats={stats} isLoading={isStatsLoading} />
         </div>
 
-        {/* Right Column: Activity Feed & Relationship Summary */}
+        {/* Right Column: Activity Feed, Recent Notifications & Relationship Summary */}
         <div className="lg:col-span-5 space-y-6">
+          <RecentNotificationsWidget />
+
           <RelationshipSummary
             partnerName={partnerName}
             partnerAvatar={partner?.avatarUrl}

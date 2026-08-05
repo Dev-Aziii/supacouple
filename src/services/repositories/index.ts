@@ -7,3 +7,5 @@ export * from './statusRepository';
 export * from './memoryRepository';
 export * from './notificationRepository';
 export * from './activitiesRepository';
+export * from './settingsRepository';
+export * from './preferencesRepository';

@@ -872,6 +872,141 @@ export type Database = {
           },
         ];
       };
+      user_settings: {
+        Row: {
+          user_id: string;
+          theme: string;
+          accent_color: string;
+          font_size: string;
+          language: string;
+          timezone: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          theme?: string;
+          accent_color?: string;
+          font_size?: string;
+          language?: string;
+          timezone?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          theme?: string;
+          accent_color?: string;
+          font_size?: string;
+          language?: string;
+          timezone?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "user_settings_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: true;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      notification_preferences: {
+        Row: {
+          user_id: string;
+          email_notifications: boolean;
+          push_notifications: boolean;
+          plan_reminders: boolean;
+          proposal_alerts: boolean;
+          memory_comments: boolean;
+          status_updates: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          email_notifications?: boolean;
+          push_notifications?: boolean;
+          plan_reminders?: boolean;
+          proposal_alerts?: boolean;
+          memory_comments?: boolean;
+          status_updates?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          email_notifications?: boolean;
+          push_notifications?: boolean;
+          plan_reminders?: boolean;
+          proposal_alerts?: boolean;
+          memory_comments?: boolean;
+          status_updates?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "notification_preferences_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: true;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      profile_preferences: {
+        Row: {
+          user_id: string;
+          bio: string | null;
+          show_anniversary: boolean;
+          profile_visibility: string;
+          partner_visibility: string;
+          activity_visibility: string;
+          memory_privacy: string;
+          proposal_privacy: string;
+          online_status_visibility: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          bio?: string | null;
+          show_anniversary?: boolean;
+          profile_visibility?: string;
+          partner_visibility?: string;
+          activity_visibility?: string;
+          memory_privacy?: string;
+          proposal_privacy?: string;
+          online_status_visibility?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          bio?: string | null;
+          show_anniversary?: boolean;
+          profile_visibility?: string;
+          partner_visibility?: string;
+          activity_visibility?: string;
+          memory_privacy?: string;
+          proposal_privacy?: string;
+          online_status_visibility?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "profile_preferences_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: true;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;

@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 import {
   MessageSquarePlus,
   CalendarPlus,
-  UserPlus,
   Gift,
   Camera,
   PlusCircle,
+  Settings,
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
@@ -16,15 +16,17 @@ interface QuickActionsProps {
   onInvitePartner?: () => void;
   onCreateProposal?: () => void;
   onAddMemory?: () => void;
+  onOpenSettings?: () => void;
   isPaired?: boolean;
 }
 
 export const QuickActions: React.FC<QuickActionsProps> = ({
   onSetStatus,
   onCreatePlan,
-  onInvitePartner,
+  onInvitePartner: _onInvitePartner,
   onCreateProposal,
   onAddMemory,
+  onOpenSettings,
   isPaired = true,
 }) => {
   const actions = [
@@ -55,9 +57,9 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
       color: 'bg-amber-50 text-amber-600 hover:bg-amber-100 dark:bg-amber-950/40 dark:text-amber-400',
     },
     {
-      label: 'Invite Partner',
-      icon: UserPlus,
-      onClick: onInvitePartner,
+      label: 'Settings',
+      icon: Settings,
+      onClick: onOpenSettings,
       color: 'bg-rose-50 text-rose-600 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-400',
     },
   ];

@@ -18,7 +18,10 @@ export interface NotificationItem {
 export interface INotificationRepository {
   getByRecipientId(recipientId: string): Promise<NotificationItem[]>;
   markAsRead(id: string): Promise<boolean>;
+  markAsUnread(id: string): Promise<boolean>;
   markAllAsRead(recipientId: string): Promise<boolean>;
+  deleteNotification(id: string): Promise<boolean>;
+  clearAll(recipientId: string): Promise<boolean>;
   create(notification: Omit<NotificationItem, 'id' | 'read' | 'createdAt'>): Promise<NotificationItem>;
 }
 
@@ -67,6 +70,21 @@ export class NotificationRepository implements INotificationRepository {
     }
   }
 
+  async markAsUnread(id: string): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('notifications')
+        .update({ read: false })
+        .eq('id', id);
+
+      if (error) throw normalizeError(error);
+      return true;
+    } catch (err) {
+      console.error('[NotificationRepository] markAsUnread error:', err);
+      return false;
+    }
+  }
+
   async markAllAsRead(recipientId: string): Promise<boolean> {
     try {
       const { error } = await supabase
@@ -79,6 +97,36 @@ export class NotificationRepository implements INotificationRepository {
       return true;
     } catch (err) {
       console.error('[NotificationRepository] markAllAsRead error:', err);
+      return false;
+    }
+  }
+
+  async deleteNotification(id: string): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw normalizeError(error);
+      return true;
+    } catch (err) {
+      console.error('[NotificationRepository] deleteNotification error:', err);
+      return false;
+    }
+  }
+
+  async clearAll(recipientId: string): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('recipient_id', recipientId);
+
+      if (error) throw normalizeError(error);
+      return true;
+    } catch (err) {
+      console.error('[NotificationRepository] clearAll error:', err);
       return false;
     }
   }
