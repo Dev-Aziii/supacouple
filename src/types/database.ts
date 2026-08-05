@@ -7,57 +7,421 @@ export type Json =
   | Json[];
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.15";
   };
   public: {
     Tables: {
-      profiles: {
+      couples: {
         Row: {
-          id: string;
-          email: string;
-          display_name: string;
-          avatar_url: string | null;
-          relationship_status: string;
-          partner_id: string | null;
+          anniversary: string | null;
           created_at: string;
+          created_by: string;
+          id: string;
+          relationship_name: string;
+          status: string;
           updated_at: string;
         };
         Insert: {
-          id: string;
-          email: string;
-          display_name?: string;
-          avatar_url?: string | null;
-          relationship_status?: string;
-          partner_id?: string | null;
+          anniversary?: string | null;
           created_at?: string;
+          created_by: string;
+          id?: string;
+          relationship_name: string;
+          status?: string;
           updated_at?: string;
         };
         Update: {
-          id?: string;
-          email?: string;
-          display_name?: string;
-          avatar_url?: string | null;
-          relationship_status?: string;
-          partner_id?: string | null;
+          anniversary?: string | null;
           created_at?: string;
+          created_by?: string;
+          id?: string;
+          relationship_name?: string;
+          status?: string;
           updated_at?: string;
         };
         Relationships: [
           {
-            foreignKeyName: "profiles_id_fkey";
-            columns: ["id"];
-            isOneToOne: true;
-            referencedRelation: "users";
+            foreignKeyName: "couples_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
+        ];
+      };
+      invitations: {
+        Row: {
+          accepted_at: string | null;
+          couple_id: string | null;
+          created_at: string;
+          email: string;
+          expires_at: string;
+          id: string;
+          invite_code: string;
+          receiver_id: string | null;
+          sender_id: string;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          accepted_at?: string | null;
+          couple_id?: string | null;
+          created_at?: string;
+          email: string;
+          expires_at: string;
+          id?: string;
+          invite_code: string;
+          receiver_id?: string | null;
+          sender_id: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          accepted_at?: string | null;
+          couple_id?: string | null;
+          created_at?: string;
+          email?: string;
+          expires_at?: string;
+          id?: string;
+          invite_code?: string;
+          receiver_id?: string | null;
+          sender_id?: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "invitations_couple_id_fkey";
+            columns: ["couple_id"];
+            isOneToOne: false;
+            referencedRelation: "couples";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "invitations_receiver_id_fkey";
+            columns: ["receiver_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "invitations_sender_id_fkey";
+            columns: ["sender_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      memories: {
+        Row: {
+          caption: string | null;
+          couple_id: string;
+          created_at: string;
+          id: string;
+          image_url: string;
+          memory_date: string;
+          title: string;
+          updated_at: string;
+          uploaded_by: string;
+        };
+        Insert: {
+          caption?: string | null;
+          couple_id: string;
+          created_at?: string;
+          id?: string;
+          image_url: string;
+          memory_date?: string;
+          title: string;
+          updated_at?: string;
+          uploaded_by: string;
+        };
+        Update: {
+          caption?: string | null;
+          couple_id?: string;
+          created_at?: string;
+          id?: string;
+          image_url?: string;
+          memory_date?: string;
+          title?: string;
+          updated_at?: string;
+          uploaded_by?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "memories_couple_id_fkey";
+            columns: ["couple_id"];
+            isOneToOne: false;
+            referencedRelation: "couples";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "memories_uploaded_by_fkey";
+            columns: ["uploaded_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      notifications: {
+        Row: {
+          body: string;
+          created_at: string;
+          id: string;
+          read: boolean;
+          recipient_id: string;
+          sender_id: string | null;
+          title: string;
+          type: string;
+        };
+        Insert: {
+          body: string;
+          created_at?: string;
+          id?: string;
+          read?: boolean;
+          recipient_id: string;
+          sender_id?: string | null;
+          title: string;
+          type: string;
+        };
+        Update: {
+          body?: string;
+          created_at?: string;
+          id?: string;
+          read?: boolean;
+          recipient_id?: string;
+          sender_id?: string | null;
+          title?: string;
+          type?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "notifications_recipient_id_fkey";
+            columns: ["recipient_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "notifications_sender_id_fkey";
+            columns: ["sender_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      plans: {
+        Row: {
+          color: string;
+          completed: boolean;
+          couple_id: string;
+          created_at: string;
+          created_by: string;
+          description: string | null;
+          end_at: string;
+          id: string;
+          location: string | null;
+          priority: string;
+          start_at: string;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          color?: string;
+          completed?: boolean;
+          couple_id: string;
+          created_at?: string;
+          created_by: string;
+          description?: string | null;
+          end_at: string;
+          id?: string;
+          location?: string | null;
+          priority?: string;
+          start_at: string;
+          title?: string;
+          updated_at?: string;
+        };
+        Update: {
+          color?: string;
+          completed?: boolean;
+          couple_id?: string;
+          created_at?: string;
+          created_by?: string;
+          description?: string | null;
+          end_at?: string;
+          id?: string;
+          location?: string | null;
+          priority?: string;
+          start_at?: string;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "plans_couple_id_fkey";
+            columns: ["couple_id"];
+            isOneToOne: false;
+            referencedRelation: "couples";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "plans_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      profiles: {
+        Row: {
+          avatar_url: string | null;
+          created_at: string;
+          display_name: string;
+          email: string;
+          id: string;
+          partner_id: string | null;
+          relationship_status: string;
+          updated_at: string;
+        };
+        Insert: {
+          avatar_url?: string | null;
+          created_at?: string;
+          display_name?: string;
+          email: string;
+          id: string;
+          partner_id?: string | null;
+          relationship_status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          avatar_url?: string | null;
+          created_at?: string;
+          display_name?: string;
+          email?: string;
+          id?: string;
+          partner_id?: string | null;
+          relationship_status?: string;
+          updated_at?: string;
+        };
+        Relationships: [
           {
             foreignKeyName: "profiles_partner_id_fkey";
             columns: ["partner_id"];
             isOneToOne: false;
             referencedRelation: "profiles";
             referencedColumns: ["id"];
-          }
+          },
+        ];
+      };
+      proposals: {
+        Row: {
+          couple_id: string;
+          created_at: string;
+          created_by: string;
+          description: string | null;
+          id: string;
+          planned_date: string;
+          response_message: string | null;
+          status: string;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          couple_id: string;
+          created_at?: string;
+          created_by: string;
+          description?: string | null;
+          id?: string;
+          planned_date: string;
+          response_message?: string | null;
+          status?: string;
+          title?: string;
+          updated_at?: string;
+        };
+        Update: {
+          couple_id?: string;
+          created_at?: string;
+          created_by?: string;
+          description?: string | null;
+          id?: string;
+          planned_date?: string;
+          response_message?: string | null;
+          status?: string;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "proposals_couple_id_fkey";
+            columns: ["couple_id"];
+            isOneToOne: false;
+            referencedRelation: "couples";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "proposals_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      statuses: {
+        Row: {
+          couple_id: string | null;
+          created_at: string;
+          emoji: string;
+          expires_at: string | null;
+          id: string;
+          status_text: string;
+          updated_at: string;
+          user_id: string;
+          visibility: string;
+        };
+        Insert: {
+          couple_id?: string | null;
+          created_at?: string;
+          emoji?: string;
+          expires_at?: string | null;
+          id?: string;
+          status_text: string;
+          updated_at?: string;
+          user_id: string;
+          visibility?: string;
+        };
+        Update: {
+          couple_id?: string | null;
+          created_at?: string;
+          emoji?: string;
+          expires_at?: string | null;
+          id?: string;
+          status_text?: string;
+          updated_at?: string;
+          user_id?: string;
+          visibility?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "statuses_couple_id_fkey";
+            columns: ["couple_id"];
+            isOneToOne: false;
+            referencedRelation: "couples";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "statuses_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
         ];
       };
     };
@@ -65,7 +429,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      is_member_of_couple: { Args: { c_id: string }; Returns: boolean };
     };
     Enums: {
       [_ in never]: never;
