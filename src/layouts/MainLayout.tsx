@@ -1,12 +1,16 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Navbar } from '@/components/layout/Navbar';
 import { AppLogo } from '@/components/common/AppLogo';
+import { ROUTES } from '@/constants/routes';
 
 export const MainLayout: React.FC = () => {
+  const location = useLocation();
+  const isHomePage = location.pathname === ROUTES.HOME;
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <Navbar variant="main" />
+      <Navbar variant={isHomePage ? 'landing' : 'main'} />
       <main className="flex-1 pb-20 md:pb-8">
         <Outlet />
       </main>
@@ -19,3 +23,4 @@ export const MainLayout: React.FC = () => {
     </div>
   );
 };
+

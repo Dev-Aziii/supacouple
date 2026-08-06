@@ -9,7 +9,7 @@ import { ROUTES } from '@/constants/routes';
 import { cn } from '@/utils/cn';
 
 interface NavbarProps {
-  variant?: 'main' | 'dashboard' | 'auth';
+  variant?: 'main' | 'dashboard' | 'auth' | 'landing';
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ variant = 'main' }) => {
@@ -24,6 +24,8 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = 'main' }) => {
     { to: ROUTES.PROPOSAL, label: 'Proposals', icon: Send },
   ];
 
+  const isSimplified = variant === 'auth' || variant === 'landing';
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-md">
       <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -31,7 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = 'main' }) => {
           <AppLogo size="sm" />
         </NavLink>
 
-        {variant === 'auth' ? (
+        {isSimplified ? (
           <nav className="flex items-center gap-3">
             <NavLink
               to={ROUTES.LOGIN}
@@ -105,7 +107,7 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = 'main' }) => {
       </div>
 
       {/* Mobile Navigation Bar */}
-      {variant !== 'auth' && (
+      {!isSimplified && (
         <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/95 backdrop-blur-lg md:hidden">
           <div className="flex items-center justify-around py-2 px-2">
             {navItems.map((item) => {
@@ -145,4 +147,3 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = 'main' }) => {
     </header>
   );
 };
-
