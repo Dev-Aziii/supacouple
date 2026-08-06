@@ -1,4 +1,8 @@
--- Seed Data for Development & Demo Testing
+-- =============================================================================
+-- SEED DATA FOR LOCAL DEVELOPMENT & DEMO TESTING ONLY
+-- WARNING: NEVER RUN THIS SEED IN PRODUCTION ENVIRONMENTS.
+-- Contains hardcoded mock credentials, default passwords, and sample test profiles.
+-- =============================================================================
 
 -- 1. Insert auth users
 INSERT INTO auth.users (

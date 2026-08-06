@@ -39,7 +39,7 @@ export class UsersRepository implements IUsersRepository {
       return this.mapRow(data);
     } catch (err) {
       console.error('[UsersRepository] getById error:', err);
-      return null;
+      throw normalizeError(err);
     }
   }
 
@@ -57,7 +57,7 @@ export class UsersRepository implements IUsersRepository {
       return this.mapRow(data);
     } catch (err) {
       console.error('[UsersRepository] getByEmail error:', err);
-      return null;
+      throw normalizeError(err);
     }
   }
 
@@ -129,7 +129,7 @@ export class UsersRepository implements IUsersRepository {
       return true;
     } catch (err) {
       console.error('[UsersRepository] deleteProfile error:', err);
-      return false;
+      throw normalizeError(err);
     }
   }
 }

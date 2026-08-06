@@ -151,57 +151,69 @@ ALTER TABLE public.relationship_milestones ENABLE ROW LEVEL SECURITY;
 -- Memory Albums RLS
 CREATE POLICY "Couple members can select memory_albums"
   ON public.memory_albums FOR SELECT
-  USING (couple_id IN (SELECT id FROM public.couples WHERE user1_id = auth.uid() OR user2_id = auth.uid()));
+  USING (public.is_member_of_couple(couple_id));
 
 CREATE POLICY "Couple members can insert memory_albums"
   ON public.memory_albums FOR INSERT
-  WITH CHECK (couple_id IN (SELECT id FROM public.couples WHERE user1_id = auth.uid() OR user2_id = auth.uid()));
+  WITH CHECK (public.is_member_of_couple(couple_id) AND created_by = auth.uid());
 
 CREATE POLICY "Couple members can update memory_albums"
   ON public.memory_albums FOR UPDATE
-  USING (couple_id IN (SELECT id FROM public.couples WHERE user1_id = auth.uid() OR user2_id = auth.uid()));
+  USING (public.is_member_of_couple(couple_id));
 
 CREATE POLICY "Couple members can delete memory_albums"
   ON public.memory_albums FOR DELETE
-  USING (couple_id IN (SELECT id FROM public.couples WHERE user1_id = auth.uid() OR user2_id = auth.uid()));
+  USING (public.is_member_of_couple(couple_id) AND created_by = auth.uid());
 
 -- Memories RLS (Update/Ensure)
 DROP POLICY IF EXISTS "Couple members can select memories" ON public.memories;
 CREATE POLICY "Couple members can select memories"
   ON public.memories FOR SELECT
-  USING (couple_id IN (SELECT id FROM public.couples WHERE user1_id = auth.uid() OR user2_id = auth.uid()));
+  USING (
+    created_by = auth.uid() OR
+    uploaded_by = auth.uid() OR
+    (COALESCE(is_private, FALSE) = FALSE AND COALESCE(visibility, 'couple') != 'private' AND public.is_member_of_couple(couple_id))
+  );
 
 DROP POLICY IF EXISTS "Couple members can insert memories" ON public.memories;
 CREATE POLICY "Couple members can insert memories"
   ON public.memories FOR INSERT
-  WITH CHECK (couple_id IN (SELECT id FROM public.couples WHERE user1_id = auth.uid() OR user2_id = auth.uid()));
+  WITH CHECK (
+    public.is_member_of_couple(couple_id) AND
+    (created_by = auth.uid() OR uploaded_by = auth.uid())
+  );
 
 DROP POLICY IF EXISTS "Couple members can update memories" ON public.memories;
 CREATE POLICY "Couple members can update memories"
   ON public.memories FOR UPDATE
-  USING (couple_id IN (SELECT id FROM public.couples WHERE user1_id = auth.uid() OR user2_id = auth.uid()));
+  USING (
+    public.is_member_of_couple(couple_id) AND
+    (created_by = auth.uid() OR uploaded_by = auth.uid())
+  );
 
 DROP POLICY IF EXISTS "Couple members can delete memories" ON public.memories;
 CREATE POLICY "Couple members can delete memories"
   ON public.memories FOR DELETE
-  USING (couple_id IN (SELECT id FROM public.couples WHERE user1_id = auth.uid() OR user2_id = auth.uid()));
+  USING (
+    public.is_member_of_couple(couple_id) AND
+    (created_by = auth.uid() OR uploaded_by = auth.uid())
+  );
 
 -- Memory Comments RLS
 CREATE POLICY "Couple members can select memory_comments"
   ON public.memory_comments FOR SELECT
   USING (memory_id IN (
     SELECT m.id FROM public.memories m
-    JOIN public.couples c ON m.couple_id = c.id
-    WHERE c.user1_id = auth.uid() OR c.user2_id = auth.uid()
+    WHERE m.created_by = auth.uid() OR m.uploaded_by = auth.uid() OR
+          (COALESCE(m.is_private, FALSE) = FALSE AND COALESCE(m.visibility, 'couple') != 'private' AND public.is_member_of_couple(m.couple_id))
   ));
 
 CREATE POLICY "Couple members can insert memory_comments"
   ON public.memory_comments FOR INSERT
-  WITH CHECK (memory_id IN (
-    SELECT m.id FROM public.memories m
-    JOIN public.couples c ON m.couple_id = c.id
-    WHERE c.user1_id = auth.uid() OR c.user2_id = auth.uid()
-  ));
+  WITH CHECK (
+    user_id = auth.uid() AND
+    memory_id IN (SELECT m.id FROM public.memories m WHERE public.is_member_of_couple(m.couple_id))
+  );
 
 CREATE POLICY "Couple members can update memory_comments"
   ON public.memory_comments FOR UPDATE
@@ -216,17 +228,16 @@ CREATE POLICY "Couple members can select memory_reactions"
   ON public.memory_reactions FOR SELECT
   USING (memory_id IN (
     SELECT m.id FROM public.memories m
-    JOIN public.couples c ON m.couple_id = c.id
-    WHERE c.user1_id = auth.uid() OR c.user2_id = auth.uid()
+    WHERE m.created_by = auth.uid() OR m.uploaded_by = auth.uid() OR
+          (COALESCE(m.is_private, FALSE) = FALSE AND COALESCE(m.visibility, 'couple') != 'private' AND public.is_member_of_couple(m.couple_id))
   ));
 
 CREATE POLICY "Couple members can insert memory_reactions"
   ON public.memory_reactions FOR INSERT
-  WITH CHECK (memory_id IN (
-    SELECT m.id FROM public.memories m
-    JOIN public.couples c ON m.couple_id = c.id
-    WHERE c.user1_id = auth.uid() OR c.user2_id = auth.uid()
-  ));
+  WITH CHECK (
+    user_id = auth.uid() AND
+    memory_id IN (SELECT m.id FROM public.memories m WHERE public.is_member_of_couple(m.couple_id))
+  );
 
 CREATE POLICY "Couple members can delete memory_reactions"
   ON public.memory_reactions FOR DELETE
@@ -235,19 +246,19 @@ CREATE POLICY "Couple members can delete memory_reactions"
 -- Relationship Milestones RLS
 CREATE POLICY "Couple members can select relationship_milestones"
   ON public.relationship_milestones FOR SELECT
-  USING (couple_id IN (SELECT id FROM public.couples WHERE user1_id = auth.uid() OR user2_id = auth.uid()));
+  USING (public.is_member_of_couple(couple_id));
 
 CREATE POLICY "Couple members can insert relationship_milestones"
   ON public.relationship_milestones FOR INSERT
-  WITH CHECK (couple_id IN (SELECT id FROM public.couples WHERE user1_id = auth.uid() OR user2_id = auth.uid()));
+  WITH CHECK (public.is_member_of_couple(couple_id) AND created_by = auth.uid());
 
 CREATE POLICY "Couple members can update relationship_milestones"
   ON public.relationship_milestones FOR UPDATE
-  USING (couple_id IN (SELECT id FROM public.couples WHERE user1_id = auth.uid() OR user2_id = auth.uid()));
+  USING (public.is_member_of_couple(couple_id));
 
 CREATE POLICY "Couple members can delete relationship_milestones"
   ON public.relationship_milestones FOR DELETE
-  USING (couple_id IN (SELECT id FROM public.couples WHERE user1_id = auth.uid() OR user2_id = auth.uid()));
+  USING (public.is_member_of_couple(couple_id) AND created_by = auth.uid());
 
 -- Add to Realtime Publication if available
 DO $$

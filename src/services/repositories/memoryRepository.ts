@@ -152,7 +152,7 @@ export class MemoryRepository implements IMemoryRepository {
       return (data || []).map((r) => this.mapMemoryRow(r));
     } catch (err) {
       console.error('[MemoryRepository] list error:', err);
-      return [];
+      throw normalizeError(err);
     }
   }
 

@@ -112,7 +112,7 @@ export class CoupleService {
           senderId: currentProfile.id,
           type: 'invite',
           title: 'New Couple Invitation',
-          body: `${currentProfile.displayName || 'Someone'} sent you a couple invitation code: ${code}`,
+          body: `${currentProfile.displayName || 'Someone'} sent you a couple invitation!`,
         });
       }
 
@@ -180,12 +180,12 @@ export class CoupleService {
       };
     } catch (err) {
       console.error('[CoupleService] validateInvite error:', err);
-      return { valid: false, message: 'Error validating invitation code' };
+      return { valid: false, message: (err as Error).message || 'Error validating invitation code' };
     }
   }
 
   /**
-   * Accept an invitation atomically using RPC or transactional fallback.
+   * Accept an invitation atomically using RPC.
    */
   async acceptInvite(code: string, anniversary?: string): Promise<{ coupleId: string }> {
     try {
@@ -202,47 +202,14 @@ export class CoupleService {
       // Primary approach: Call PostgreSQL RPC for single-transaction atomic execution
       const { data: rpcData, error: rpcError } = await supabase.rpc('accept_couple_invite', {
         p_invite_code: invite.inviteCode,
-        p_user_id: currentProfile.id,
         p_anniversary: anniversary || new Date().toISOString().split('T')[0],
       });
 
-      if (!rpcError && rpcData?.couple_id) {
-        // Create acceptance notification for sender
-        await notificationRepository.create({
-          recipientId: invite.senderId,
-          senderId: currentProfile.id,
-          type: 'invite',
-          title: 'Invitation Accepted! 💕',
-          body: `${currentProfile.displayName || 'Your partner'} accepted your couple invitation!`,
-        });
-
-        return { coupleId: rpcData.couple_id };
+      if (rpcError || !rpcData?.couple_id) {
+        throw normalizeError(rpcError || new Error('Failed to accept invitation'));
       }
 
-      console.warn('[CoupleService] RPC accept_couple_invite fallback executing:', rpcError?.message);
-
-      // Fallback transactional approach if RPC not installed in DB yet
-      const senderProfile = await usersRepository.getById(invite.senderId);
-      const relationshipName = `${senderProfile?.displayName || 'Partner 1'} & ${currentProfile.displayName || 'Partner 2'}`;
-
-      const couple = await couplesRepository.create({
-        relationshipName,
-        anniversary: anniversary || new Date().toISOString().split('T')[0],
-        createdBy: invite.senderId,
-      });
-
-      // Update both profiles
-      await usersRepository.updateProfile(invite.senderId, {
-        partnerId: currentProfile.id,
-      });
-      await usersRepository.updateProfile(currentProfile.id, {
-        partnerId: invite.senderId,
-      });
-
-      // Mark invitation accepted
-      await invitationsRepository.updateStatus(invite.id, 'accepted', currentProfile.id);
-
-      // Create notification for sender
+      // Create acceptance notification for sender
       await notificationRepository.create({
         recipientId: invite.senderId,
         senderId: currentProfile.id,
@@ -251,7 +218,7 @@ export class CoupleService {
         body: `${currentProfile.displayName || 'Your partner'} accepted your couple invitation!`,
       });
 
-      return { coupleId: couple.id };
+      return { coupleId: rpcData.couple_id };
     } catch (err) {
       console.error('[CoupleService] acceptInvite error:', err);
       throw normalizeError(err);
@@ -311,35 +278,13 @@ export class CoupleService {
 
       const formerPartnerId = currentProfile.partnerId;
 
-      // Try RPC first
-      const { data: rpcData, error: rpcError } = await supabase.rpc('leave_relationship', {
-        p_user_id: currentProfile.id,
-      });
+      const { data: rpcData, error: rpcError } = await supabase.rpc('leave_relationship');
 
-      if (!rpcError && rpcData?.status === 'ended') {
-        // Send notification to former partner
-        await notificationRepository.create({
-          recipientId: formerPartnerId,
-          senderId: currentProfile.id,
-          type: 'system',
-          title: 'Relationship Ended',
-          body: `${currentProfile.displayName || 'Your partner'} has left the relationship.`,
-        });
-
-        return true;
+      if (rpcError || rpcData?.status !== 'ended') {
+        throw normalizeError(rpcError || new Error('Failed to leave relationship'));
       }
 
-      console.warn('[CoupleService] RPC leave_relationship fallback executing:', rpcError?.message);
-
-      // Client-side fallback
-      const activeCouple = await couplesRepository.getActiveCoupleForUser(currentProfile.id, formerPartnerId);
-      if (activeCouple) {
-        await couplesRepository.update(activeCouple.id, { status: 'ended' });
-      }
-
-      await usersRepository.updateProfile(currentProfile.id, { partnerId: null });
-      await usersRepository.updateProfile(formerPartnerId, { partnerId: null });
-
+      // Send notification to former partner
       await notificationRepository.create({
         recipientId: formerPartnerId,
         senderId: currentProfile.id,
@@ -369,7 +314,7 @@ export class CoupleService {
       return { sent, received };
     } catch (err) {
       console.error('[CoupleService] getPendingInvites error:', err);
-      return { sent: [], received: [] };
+      throw normalizeError(err);
     }
   }
 }

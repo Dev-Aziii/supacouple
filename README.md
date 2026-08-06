@@ -126,11 +126,13 @@ If you have already configured the **Supabase MCP server** in your environment, 
 ## 🔮 Future Phases Roadmap
 
 - [x] **Phase 1**: Base Architecture, Design System, PWA Setup, React Router, QueryClient, Zustand, Types.
-- [ ] **Phase 2**: Supabase Auth (Email + OTP / Magic Link), User Profiles & Partner Pairing via QR/Code.
-- [ ] **Phase 3**: Shared Status Updates (Mood, Location, Activity) with Real-Time WebSockets (`supabase_realtime`).
-- [ ] **Phase 4**: Date & Trip Planning Module (Interactive Calendar, Bucket Lists).
-- [ ] **Phase 5**: Spontaneous Proposals & Push Notifications (`vite-plugin-pwa` web push).
-- [ ] **Phase 6**: Shared Memories Gallery & Private Chat.
+- [x] **Phase 2**: Supabase Auth (Email + OTP / Magic Link), User Profiles & Partner Pairing via QR/Code.
+- [x] **Phase 3**: Shared Status Updates (Mood, Location, Activity) with Real-Time WebSockets (`supabase_realtime`).
+- [x] **Phase 4**: Date & Trip Planning Module (Interactive Calendar, Bucket Lists).
+- [x] **Phase 5**: Spontaneous Proposals & Push Notifications.
+- [x] **Phase 6**: Shared Memories Gallery & Private Chat.
+- [x] **Phase 7-11**: Notifications, User Preferences, Settings & Activity Logging.
+- [x] **Phase 12**: Complete Security Hardening (RPC parameter sanitization, storage policies, search_path isolation, RLS repair).
 
 ---
 
