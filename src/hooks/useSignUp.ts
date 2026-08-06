@@ -26,7 +26,7 @@ export const useSignUp = () => {
     },
     onSuccess: (data) => {
       if (data?.session) {
-        toast.success('Account created successfully! Welcome to SupaCouple.');
+        toast.success('Account created successfully! Welcome to Tezā.');
       } else {
         toast.success('Account created! Please check your email to confirm your address before logging in.', {
           duration: 6000,

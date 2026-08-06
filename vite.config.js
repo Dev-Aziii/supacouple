@@ -8,11 +8,11 @@ export default defineConfig({
         react(),
         VitePWA({
             registerType: 'autoUpdate',
-            includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+            includeAssets: ['favicon.ico', 'favicon.svg', 'apple-touch-icon.png', 'logo.webp', 'logo.png', 'logo.svg'],
             manifest: {
-                name: 'SupaCouple — Couple App',
-                short_name: 'SupaCouple',
-                description: 'A progressive web application for couples to share status, schedule dates, and make plans together.',
+                name: 'Tezā — Couple Companion',
+                short_name: 'Tezā',
+                description: 'A modern couple companion that keeps two lives connected through plans, updates, memories, and meaningful moments.',
                 theme_color: '#ec4899',
                 background_color: '#0f172a',
                 display: 'standalone',
@@ -30,7 +30,7 @@ export default defineConfig({
                         type: 'image/png',
                     },
                     {
-                        src: 'pwa-512x512.png',
+                        src: 'maskable-icon.png',
                         sizes: '512x512',
                         type: 'image/png',
                         purpose: 'any maskable',

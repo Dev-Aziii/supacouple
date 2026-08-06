@@ -74,13 +74,13 @@ export const SettingsPage: React.FC = () => {
                 <div className="p-2 rounded-xl bg-pink-500/10 text-pink-400">
                   <Heart className="w-5 h-5" />
                 </div>
-                <span>About SupaCouple</span>
+                <span>About Tezā</span>
               </CardTitle>
-              <CardDescription>Modern Progressive Web Application for Couples</CardDescription>
+              <CardDescription>Modern Couple Companion</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 text-sm text-muted-foreground">
               <p>
-                <strong>SupaCouple</strong> is crafted with React 19, TypeScript, Vite, Supabase, TanStack Query, Zustand, and TailwindCSS. Designed for couples to connect, plan dates, capture memories, and share relationship milestones.
+                <strong>Tezā</strong> is a modern couple companion that keeps two lives connected through plans, updates, memories, and meaningful moments. Crafted with React 19, TypeScript, Vite, Supabase, TanStack Query, Zustand, and TailwindCSS.
               </p>
               <div className="p-4 rounded-2xl bg-card/40 border border-border/40 space-y-1 text-xs">
                 <div><strong>Version:</strong> 1.0.0 (Phase 11 — Notifications & Settings)</div>

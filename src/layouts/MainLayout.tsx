@@ -13,7 +13,7 @@ export const MainLayout: React.FC = () => {
       <footer className="hidden md:block border-t border-border/40 bg-card/30 py-6">
         <div className="container flex flex-col sm:flex-row items-center justify-between gap-4 px-4 text-xs text-muted-foreground">
           <AppLogo size="sm" />
-          <p>© {new Date().getFullYear()} SupaCouple. Phase 1 Environment Prepared.</p>
+          <p>© {new Date().getFullYear()} Tezā. All rights reserved.</p>
         </div>
       </footer>
     </div>

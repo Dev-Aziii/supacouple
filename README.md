@@ -1,6 +1,6 @@
-# 💖 SupaCouple — Progressive Web Application for Couples
+# 💖 Tezā — Couple Companion PWA
 
-**SupaCouple** is a modern, responsive Progressive Web Application (PWA) designed for couples to share daily status, schedule dates, propose spontaneous trips, and cherish shared memories.
+**Tezā** is a modern couple companion that keeps two lives connected through plans, updates, memories, and meaningful moments. Designed as a high-performance Progressive Web Application (PWA) with offline support and real-time synchronization.
 
 Built on top of a 100% free-tier architecture utilizing **React 19**, **Vite**, **TypeScript**, **TailwindCSS**, **shadcn/ui**, **React Router v7**, **TanStack Query**, **Zustand**, and **Supabase**.
 

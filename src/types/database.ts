@@ -1019,7 +1019,7 @@ export type Database = {
       };
       leave_relationship: {
         Args: Record<string, never>;
-        Returns: { user_id?: string; former_partner_id?: string; couple_id?: string; status?: status_type };
+        Returns: { user_id?: string; former_partner_id?: string; couple_id?: string; status?: string };
       };
     };
     Enums: {

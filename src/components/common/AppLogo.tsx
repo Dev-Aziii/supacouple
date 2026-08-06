@@ -1,5 +1,4 @@
 import React from 'react';
-import { Heart, Sparkles } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
 interface AppLogoProps {
@@ -14,30 +13,46 @@ export const AppLogo: React.FC<AppLogoProps> = ({
   showTagline = false,
 }) => {
   const iconSizes = {
-    sm: 'w-5 h-5',
-    md: 'w-7 h-7',
-    lg: 'w-10 h-10',
+    sm: 'w-7 h-7',
+    md: 'w-9 h-9',
+    lg: 'w-12 h-12',
   };
 
   const textSizes = {
-    sm: 'text-lg',
+    sm: 'text-xl',
     md: 'text-2xl',
     lg: 'text-3xl',
   };
 
+  const pixelDimensions = {
+    sm: 28,
+    md: 36,
+    lg: 48,
+  };
+
   return (
-    <div className={cn('inline-flex items-center gap-2.5 select-none', className)}>
-      <div className="relative flex items-center justify-center p-2 rounded-2xl bg-gradient-to-tr from-pink-500 via-rose-500 to-purple-600 shadow-md shadow-pink-500/20 text-white">
-        <Heart className={cn(iconSizes[size], 'fill-white stroke-none animate-pulse-subtle')} />
-        <Sparkles className="w-3 h-3 absolute -top-1 -right-1 text-yellow-300 animate-spin-slow" />
+    <div className={cn('inline-flex items-center gap-2.5 select-none', className)} aria-label="Tezā Logo">
+      <div className="relative flex items-center justify-center shrink-0">
+        <picture>
+          <source srcSet="/logo.webp" type="image/webp" />
+          <img
+            src="/logo.png"
+            alt="Tezā logo"
+            className={cn(iconSizes[size], 'object-contain transition-transform duration-300 hover:scale-105 filter drop-shadow-sm')}
+            width={pixelDimensions[size]}
+            height={pixelDimensions[size]}
+            loading="eager"
+            decoding="async"
+          />
+        </picture>
       </div>
-      <div className="flex flex-col">
-        <span className={cn('font-bold tracking-tight bg-gradient-to-r from-pink-400 via-rose-400 to-purple-400 bg-clip-text text-transparent font-sans', textSizes[size])}>
-          SupaCouple
+      <div className="flex flex-col leading-none">
+        <span className={cn('font-bold tracking-tight bg-gradient-to-r from-pink-500 via-rose-500 to-purple-500 bg-clip-text text-transparent font-sans', textSizes[size])}>
+          Tezā
         </span>
         {showTagline && (
-          <span className="text-xs text-muted-foreground font-medium tracking-wide">
-            Together, Every Day
+          <span className="text-xs text-muted-foreground font-medium tracking-wide mt-0.5">
+            Couple Companion
           </span>
         )}
       </div>

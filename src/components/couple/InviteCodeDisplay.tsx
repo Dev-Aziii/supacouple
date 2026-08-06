@@ -34,8 +34,8 @@ export const InviteCodeDisplay: React.FC<InviteCodeDisplayProps> = ({
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Supacouple Partner Invitation',
-          text: `Join me on Supacouple! Use my invitation code: ${code}`,
+          title: 'Tezā Partner Invitation',
+          text: `Join me on Tezā! Use my invitation code: ${code}`,
           url: window.location.origin,
         });
       } catch (err) {
