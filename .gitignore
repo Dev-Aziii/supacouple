@@ -75,3 +75,4 @@ dev-dist
 # Cache
 node_modules
 .tmp
+supabase/.temp/*

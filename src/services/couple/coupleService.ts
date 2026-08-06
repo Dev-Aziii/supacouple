@@ -105,15 +105,19 @@ export class CoupleService {
       });
 
       // Try to find receiver by email to deliver notification directly if registered
-      const receiverProfile = await usersRepository.getByEmail(cleanEmail);
-      if (receiverProfile) {
-        await notificationRepository.create({
-          recipientId: receiverProfile.id,
-          senderId: currentProfile.id,
-          type: 'invite',
-          title: 'New Couple Invitation',
-          body: `${currentProfile.displayName || 'Someone'} sent you a couple invitation!`,
-        });
+      try {
+        const receiverProfile = await usersRepository.getByEmail(cleanEmail);
+        if (receiverProfile) {
+          await notificationRepository.create({
+            recipientId: receiverProfile.id,
+            senderId: currentProfile.id,
+            type: 'invite',
+            title: 'New Couple Invitation',
+            body: `${currentProfile.displayName || 'Someone'} sent you a couple invitation!`,
+          });
+        }
+      } catch (notifErr) {
+        console.warn('[CoupleService] Client notification insert skipped (DB trigger handles auto-delivery):', notifErr);
       }
 
       return invitation;
@@ -209,14 +213,18 @@ export class CoupleService {
         throw normalizeError(rpcError || new Error('Failed to accept invitation'));
       }
 
-      // Create acceptance notification for sender
-      await notificationRepository.create({
-        recipientId: invite.senderId,
-        senderId: currentProfile.id,
-        type: 'invite',
-        title: 'Invitation Accepted! 💕',
-        body: `${currentProfile.displayName || 'Your partner'} accepted your couple invitation!`,
-      });
+      // Create acceptance notification for sender (backup for DB RPC)
+      try {
+        await notificationRepository.create({
+          recipientId: invite.senderId,
+          senderId: currentProfile.id,
+          type: 'invite',
+          title: 'Invitation Accepted! 💕',
+          body: `${currentProfile.displayName || 'Your partner'} accepted your couple invitation!`,
+        });
+      } catch (notifErr) {
+        console.warn('[CoupleService] Client notification insert skipped:', notifErr);
+      }
 
       return { coupleId: rpcData.couple_id };
     } catch (err) {
@@ -235,14 +243,18 @@ export class CoupleService {
 
       const invitation = await invitationsRepository.updateStatus(invitationId, 'declined', currentProfile.id);
 
-      // Notify sender
-      await notificationRepository.create({
-        recipientId: invitation.senderId,
-        senderId: currentProfile.id,
-        type: 'invite',
-        title: 'Invitation Declined',
-        body: `${currentProfile.displayName || 'User'} declined your couple invitation.`,
-      });
+      // Notify sender (backup for DB trigger)
+      try {
+        await notificationRepository.create({
+          recipientId: invitation.senderId,
+          senderId: currentProfile.id,
+          type: 'invite',
+          title: 'Invitation Declined',
+          body: `${currentProfile.displayName || 'User'} declined your couple invitation.`,
+        });
+      } catch (notifErr) {
+        console.warn('[CoupleService] Client notification insert skipped:', notifErr);
+      }
 
       return invitation;
     } catch (err) {
@@ -284,14 +296,18 @@ export class CoupleService {
         throw normalizeError(rpcError || new Error('Failed to leave relationship'));
       }
 
-      // Send notification to former partner
-      await notificationRepository.create({
-        recipientId: formerPartnerId,
-        senderId: currentProfile.id,
-        type: 'system',
-        title: 'Relationship Ended',
-        body: `${currentProfile.displayName || 'Your partner'} has left the relationship.`,
-      });
+      // Send notification to former partner (backup for DB RPC)
+      try {
+        await notificationRepository.create({
+          recipientId: formerPartnerId,
+          senderId: currentProfile.id,
+          type: 'system',
+          title: 'Relationship Ended',
+          body: `${currentProfile.displayName || 'Your partner'} has left the relationship.`,
+        });
+      } catch (notifErr) {
+        console.warn('[CoupleService] Client notification insert skipped:', notifErr);
+      }
 
       return true;
     } catch (err) {
