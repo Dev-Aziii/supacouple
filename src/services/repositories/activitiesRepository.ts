@@ -4,6 +4,9 @@ import type { Database, Json } from '../../types/database';
 import type { ActivityItem, CreateActivityDTO, ActivityType, ActivityMetadata } from '../../types/activity';
 
 type ActivityRow = Database['public']['Tables']['activities']['Row'];
+type ActivityRowWithProfile = ActivityRow & {
+  profiles?: { display_name: string; avatar_url: string | null } | null;
+};
 
 export interface IActivitiesRepository {
   create(dto: CreateActivityDTO): Promise<ActivityItem>;
@@ -18,7 +21,8 @@ export interface IActivitiesRepository {
 }
 
 export class ActivitiesRepository implements IActivitiesRepository {
-  private mapRow(row: ActivityRow): ActivityItem {
+  private mapRow(row: ActivityRowWithProfile): ActivityItem {
+    const profile = row.profiles;
     return {
       id: row.id,
       coupleId: row.couple_id,
@@ -28,6 +32,12 @@ export class ActivitiesRepository implements IActivitiesRepository {
       description: row.description || undefined,
       metadata: (row.metadata as ActivityMetadata) || {},
       createdAt: row.created_at,
+      userProfile: profile
+        ? {
+            displayName: profile.display_name,
+            avatarUrl: profile.avatar_url || undefined,
+          }
+        : undefined,
     };
   }
 
@@ -45,7 +55,7 @@ export class ActivitiesRepository implements IActivitiesRepository {
       const { data, error } = await supabase
         .from('activities')
         .insert(payload)
-        .select()
+        .select('*, profiles:user_id(display_name, avatar_url)')
         .single();
 
       if (error) throw normalizeError(error);
@@ -60,7 +70,7 @@ export class ActivitiesRepository implements IActivitiesRepository {
     try {
       const { data, error } = await supabase
         .from('activities')
-        .select('*')
+        .select('*, profiles:user_id(display_name, avatar_url)')
         .eq('couple_id', coupleId)
         .order('created_at', { ascending: false })
         .limit(limit);
@@ -88,7 +98,7 @@ export class ActivitiesRepository implements IActivitiesRepository {
 
       const { data, error, count } = await supabase
         .from('activities')
-        .select('*', { count: 'exact' })
+        .select('*, profiles:user_id(display_name, avatar_url)', { count: 'exact' })
         .eq('couple_id', coupleId)
         .order('created_at', { ascending: false })
         .range(from, to);

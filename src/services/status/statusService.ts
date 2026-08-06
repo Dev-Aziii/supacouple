@@ -1,5 +1,6 @@
 import { statusRepository } from '../repositories/statusRepository';
 import { notificationRepository } from '../repositories/notificationRepository';
+import { activityService } from '../activity/activityService';
 import type { StatusUpdate, PresetStatusType } from '../../types/status';
 
 const OFFLINE_STATUS_QUEUE_KEY = 'supacouple_offline_status_queue';
@@ -43,6 +44,21 @@ export class StatusService {
       statusMessage: payload.statusMessage || '',
       expiresAt: payload.expiresAt || null,
     });
+
+    if (payload.coupleId) {
+      try {
+        await activityService.createActivity({
+          coupleId: payload.coupleId,
+          userId: payload.userId,
+          type: 'status_updated',
+          title: 'updated status',
+          description: payload.statusMessage || undefined,
+          metadata: { emoji: payload.mood || '💬' },
+        });
+      } catch (err) {
+        console.warn('[StatusService] Activity creation fallback warning:', err);
+      }
+    }
 
     // Send partner notification if partnered
     if (payload.partnerId) {

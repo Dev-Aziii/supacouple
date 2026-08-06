@@ -133,9 +133,44 @@ export const ProposalResponseCard: React.FC<ProposalResponseCardProps> = ({
               className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-semibold hover:bg-rose-500/30 transition-colors"
             >
               <X className="w-4 h-4" />
-              <span>Decline</span>
+              <span>Reject</span>
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Non-Pending or Creator Status Banners */}
+      {proposal.status === 'accepted' && (
+        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-center space-y-1">
+          <div className="flex items-center justify-center gap-1.5 font-bold text-sm">
+            <Check className="w-4 h-4" />
+            <span>Accepted ✓</span>
+          </div>
+          <p className="text-xs text-emerald-300/80 font-medium">Added to Shared Calendar</p>
+        </div>
+      )}
+
+      {proposal.status === 'declined' && (
+        <div className="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-center text-xs font-semibold">
+          {isPartner ? 'You rejected this proposal' : 'Partner rejected this proposal'}
+        </div>
+      )}
+
+      {proposal.status === 'maybe' && (
+        <div className="p-3 rounded-2xl bg-purple-500/10 border border-purple-500/30 text-purple-300 text-center text-xs font-semibold">
+          {isPartner ? 'You responded Maybe' : 'Partner responded Maybe'}
+        </div>
+      )}
+
+      {proposal.status === 'countered' && (
+        <div className="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-blue-300 text-center text-xs font-semibold">
+          {isPartner ? 'You sent a counter proposal' : 'Partner sent a counter proposal'}
+        </div>
+      )}
+
+      {isPending && !isPartner && (
+        <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-center text-xs font-medium italic">
+          Waiting for partner response...
         </div>
       )}
 

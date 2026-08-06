@@ -1,7 +1,9 @@
+import { toast } from 'sonner';
 import { proposalRepository } from '../repositories/proposalRepository';
 import { plansRepository } from '../repositories/plansRepository';
 import { notificationRepository } from '../repositories/notificationRepository';
 import { storageService } from '../storage/storageService';
+import { activityService } from '../activity/activityService';
 import type {
   SpontaneousProposal,
   CreateProposalDTO,
@@ -77,6 +79,19 @@ export class ProposalService {
 
     const created = await proposalRepository.create(dto);
 
+    try {
+      await activityService.createActivity({
+        coupleId: dto.coupleId,
+        userId: dto.senderId,
+        type: 'proposal_created',
+        title: `created proposal "${created.title}"`,
+        description: created.description || undefined,
+        metadata: { proposal_id: created.id, planned_date: created.proposedTime },
+      });
+    } catch (err) {
+      console.warn('[ProposalService] Activity fallback warning:', err);
+    }
+
     if (partnerId) {
       try {
         await notificationRepository.create({
@@ -97,6 +112,13 @@ export class ProposalService {
   }
 
   async editProposal(id: string, updates: UpdateProposalDTO, partnerId?: string | null, userId?: string): Promise<SpontaneousProposal> {
+    const existing = await proposalRepository.getById(id);
+    if (existing && existing.status !== 'pending' && updates.status !== 'cancelled') {
+      const msg = `Cannot edit a proposal with status "${existing.status}"`;
+      toast.error(msg);
+      throw new Error(msg);
+    }
+
     if (!navigator.onLine) {
       this.enqueueOfflineAction({
         id,
@@ -105,7 +127,6 @@ export class ProposalService {
         partnerId,
         timestamp: Date.now(),
       });
-      const existing = await proposalRepository.getById(id);
       return {
         ...(existing || {
           id,
@@ -180,6 +201,20 @@ export class ProposalService {
   }
 
   async acceptProposal(id: string, responseNote?: string, partnerId?: string | null, userId?: string): Promise<SpontaneousProposal> {
+    const existing = await proposalRepository.getById(id);
+    if (existing) {
+      if (userId && existing.senderId === userId) {
+        const msg = 'You cannot accept your own proposal';
+        toast.error(msg);
+        throw new Error(msg);
+      }
+      if (existing.status !== 'pending') {
+        const msg = 'Proposal has already been responded to';
+        toast.error(msg);
+        throw new Error(msg);
+      }
+    }
+
     if (!navigator.onLine) {
       this.enqueueOfflineAction({
         id,
@@ -219,6 +254,20 @@ export class ProposalService {
   }
 
   async declineProposal(id: string, responseNote?: string, partnerId?: string | null, userId?: string): Promise<SpontaneousProposal> {
+    const existing = await proposalRepository.getById(id);
+    if (existing) {
+      if (userId && existing.senderId === userId) {
+        const msg = 'You cannot reject your own proposal';
+        toast.error(msg);
+        throw new Error(msg);
+      }
+      if (existing.status !== 'pending') {
+        const msg = 'Proposal has already been responded to';
+        toast.error(msg);
+        throw new Error(msg);
+      }
+    }
+
     if (!navigator.onLine) {
       this.enqueueOfflineAction({
         id,
@@ -249,6 +298,20 @@ export class ProposalService {
   }
 
   async maybeProposal(id: string, responseNote?: string, partnerId?: string | null, userId?: string): Promise<SpontaneousProposal> {
+    const existing = await proposalRepository.getById(id);
+    if (existing) {
+      if (userId && existing.senderId === userId) {
+        const msg = 'You cannot respond to your own proposal';
+        toast.error(msg);
+        throw new Error(msg);
+      }
+      if (existing.status !== 'pending') {
+        const msg = 'Proposal has already been responded to';
+        toast.error(msg);
+        throw new Error(msg);
+      }
+    }
+
     if (!navigator.onLine) {
       this.enqueueOfflineAction({
         id,
@@ -282,6 +345,18 @@ export class ProposalService {
     // 1. Fetch original proposal
     const original = await proposalRepository.getById(dto.proposalId);
     if (!original) throw new Error('Original proposal not found');
+
+    if (dto.senderId && original.senderId === dto.senderId) {
+      const msg = 'You cannot counter your own proposal';
+      toast.error(msg);
+      throw new Error(msg);
+    }
+
+    if (original.status !== 'pending') {
+      const msg = 'Proposal has already been responded to';
+      toast.error(msg);
+      throw new Error(msg);
+    }
 
     // 2. Create child proposal with parentProposalId linked to original
     const newProposal = await this.createProposal(

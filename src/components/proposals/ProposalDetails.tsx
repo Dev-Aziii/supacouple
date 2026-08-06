@@ -139,7 +139,7 @@ export const ProposalDetails: React.FC<ProposalDetailsProps> = ({
                 {/* Sender controls (Edit / Delete) */}
                 {isSender && (
                   <div className="flex items-center gap-2">
-                    {onEdit && (
+                    {onEdit && proposal.status === 'pending' && (
                       <button
                         onClick={() => onEdit(proposal)}
                         className="p-2 rounded-xl bg-accent/50 hover:bg-accent text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 text-xs font-medium"

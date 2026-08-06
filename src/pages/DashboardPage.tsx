@@ -133,6 +133,7 @@ export const DashboardPage: React.FC = () => {
         onAddMemory={() => navigate(ROUTES.GALLERY)}
         onOpenSettings={() => navigate(ROUTES.SETTINGS)}
         isPaired={isPaired}
+        relationshipStatus={relationshipStatus}
       />
 
       {/* 3. Partner Live Status Hero Card */}

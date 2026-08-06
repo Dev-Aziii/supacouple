@@ -123,7 +123,11 @@ export const TimelinePage: React.FC = () => {
       {/* Tab Contents */}
       <div>
         {activeTab === 'timeline' && (
-          <MemoryTimeline items={timelineItems} onSelectItem={handleTimelineSelect} />
+          <MemoryTimeline
+            items={timelineItems}
+            onSelectItem={handleTimelineSelect}
+            onAddMemory={() => setShowMemoryForm(true)}
+          />
         )}
 
         {activeTab === 'milestones' && (

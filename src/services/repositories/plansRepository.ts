@@ -1,5 +1,6 @@
 import { supabase } from '../supabase/client';
 import { normalizeError } from '../errors';
+import { activityService } from '../activity/activityService';
 import type { PlanItem, PlanCategory, PlanPriority, PlanRepeat } from '../../types/plan';
 import type { Database } from '../../types/database';
 
@@ -158,6 +159,22 @@ export class PlansRepository implements IPlansRepository {
         .single();
 
       if (error) throw normalizeError(error);
+
+      if (data && data.couple_id && data.created_by) {
+        try {
+          await activityService.createActivity({
+            coupleId: data.couple_id,
+            userId: data.created_by,
+            type: 'plan_created',
+            title: `created plan "${data.title}"`,
+            description: data.description || undefined,
+            metadata: { plan_id: data.id, start_at: data.start_at, location: data.location || undefined },
+          });
+        } catch (err) {
+          console.warn('[PlansRepository] activity fallback warning:', err);
+        }
+      }
+
       return this.mapRow(data);
     } catch (err) {
       console.error('[PlansRepository] create error:', err);

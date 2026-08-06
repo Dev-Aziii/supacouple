@@ -193,7 +193,11 @@ export const GalleryPage: React.FC = () => {
           )}
 
           {viewMode === 'timeline' && (
-            <MemoryTimeline items={timelineItems} onSelectItem={handleTimelineSelect} />
+            <MemoryTimeline
+              items={timelineItems}
+              onSelectItem={handleTimelineSelect}
+              onAddMemory={() => setShowFormModal(true)}
+            />
           )}
 
           {viewMode === 'album' && (

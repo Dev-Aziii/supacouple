@@ -10,6 +10,7 @@ interface AgendaViewProps {
   onEdit?: (plan: PlanItem) => void;
   onDelete?: (plan: PlanItem) => void;
   onSelectPlan?: (plan: PlanItem) => void;
+  onAddPlan?: () => void;
 }
 
 export const AgendaView: React.FC<AgendaViewProps> = ({
@@ -19,12 +20,26 @@ export const AgendaView: React.FC<AgendaViewProps> = ({
   onEdit,
   onDelete,
   onSelectPlan,
+  onAddPlan,
 }) => {
   if (!plans.length) {
     return (
-      <div className="w-full rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 text-center text-slate-400 dark:text-slate-500">
-        <CalendarIcon className="w-10 h-10 mx-auto mb-2 opacity-50" />
-        <p className="text-sm font-medium">No plans in agenda for this view.</p>
+      <div className="w-full rounded-2xl border border-dashed border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 p-12 text-center space-y-3">
+        <div className="w-14 h-14 rounded-full bg-pink-500/10 text-pink-500 flex items-center justify-center mx-auto">
+          <CalendarIcon className="w-7 h-7" />
+        </div>
+        <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">No Plans Scheduled</h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
+          Your shared agenda is open. Coordinate date nights, trips, and activities together!
+        </p>
+        {onAddPlan && (
+          <button
+            onClick={onAddPlan}
+            className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-pink-600 hover:bg-pink-700 rounded-xl transition-all shadow-md shadow-pink-500/20"
+          >
+            + Create First Plan
+          </button>
+        )}
       </div>
     );
   }

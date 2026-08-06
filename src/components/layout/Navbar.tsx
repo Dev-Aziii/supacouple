@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Heart, Calendar, Send, Camera, Clock, Bell, LogIn, UserPlus } from 'lucide-react';
+import { LayoutDashboard, Calendar, Send, Camera, Clock, Bell, LogIn, UserPlus, User } from 'lucide-react';
 import { AppLogo } from '@/components/common/AppLogo';
 import { UnreadBadge } from '@/components/notifications/UnreadBadge';
 import { UserAvatarDropdown } from '@/components/layout/UserAvatarDropdown';
@@ -14,12 +14,12 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ variant = 'main' }) => {
   const { unreadCount } = useNotifications();
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
 
   const navItems = [
     { to: ROUTES.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard },
     { to: ROUTES.GALLERY, label: 'Memories', icon: Camera },
     { to: ROUTES.TIMELINE, label: 'Timeline', icon: Clock },
-    { to: ROUTES.PAIR, label: 'Pairing', icon: Heart },
     { to: ROUTES.PLANS, label: 'Plans', icon: Calendar },
     { to: ROUTES.PROPOSAL, label: 'Proposals', icon: Send },
   ];
@@ -95,7 +95,10 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = 'main' }) => {
                 )}
               </NavLink>
 
-              <UserAvatarDropdown />
+              <UserAvatarDropdown
+                isMobileOpen={isMobileDrawerOpen}
+                onMobileClose={() => setIsMobileDrawerOpen(false)}
+              />
             </div>
           </div>
         )}
@@ -123,6 +126,19 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = 'main' }) => {
                 </NavLink>
               );
             })}
+
+            {/* Mobile Profile Drawer Trigger */}
+            <button
+              type="button"
+              onClick={() => setIsMobileDrawerOpen(true)}
+              className={cn(
+                'flex flex-col items-center gap-1 px-2 py-1 rounded-xl text-[11px] font-medium transition-colors',
+                isMobileDrawerOpen ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
+              <User className="w-4 h-4" />
+              <span>Profile</span>
+            </button>
           </div>
         </div>
       )}

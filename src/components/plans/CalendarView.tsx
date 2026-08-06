@@ -329,6 +329,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           onEdit={onEdit}
           onDelete={onDelete}
           onSelectPlan={onSelectPlan}
+          onAddPlan={() => onAddPlan(currentDate)}
         />
       )}
     </div>

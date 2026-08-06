@@ -8,6 +8,7 @@ import {
   UserPlus,
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import type { RelationshipStatusType } from '@/store/relationshipStore';
 
 interface QuickActionsProps {
   onSetStatus?: () => void;
@@ -17,6 +18,7 @@ interface QuickActionsProps {
   onAddMemory?: () => void;
   onOpenSettings?: () => void;
   isPaired?: boolean;
+  relationshipStatus?: RelationshipStatusType;
 }
 
 export const QuickActions: React.FC<QuickActionsProps> = ({
@@ -26,8 +28,14 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
   onCreateProposal,
   onAddMemory,
   isPaired = true,
+  relationshipStatus = 'partnered',
 }) => {
-  const actions = [
+  const actions: Array<{
+    label: string;
+    icon: React.ElementType;
+    onClick?: () => void;
+    disabled?: boolean;
+  }> = [
     {
       label: 'Set Status',
       icon: MessageSquarePlus,
@@ -50,12 +58,28 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
       onClick: onAddMemory,
       disabled: !isPaired,
     },
-    {
+  ];
+
+  if (relationshipStatus === 'single') {
+    actions.push({
       label: 'Invite Partner',
       icon: UserPlus,
       onClick: onInvitePartner,
-    },
-  ];
+      disabled: false,
+    });
+  } else if (relationshipStatus === 'pending' || relationshipStatus === 'invited') {
+    actions.push({
+      label: 'Invitation Pending',
+      icon: UserPlus,
+      onClick: undefined,
+      disabled: true,
+    });
+  }
+
+  const gridColsClass =
+    actions.length === 5
+      ? 'grid-cols-2 sm:grid-cols-5'
+      : 'grid-cols-2 sm:grid-cols-4';
 
   return (
     <Card>
@@ -66,7 +90,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
       </CardHeader>
 
       <CardContent>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div className={`grid ${gridColsClass} gap-3`}>
           {actions.map((act) => {
             const Icon = act.icon;
             return (
