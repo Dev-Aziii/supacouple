@@ -6,8 +6,8 @@ import {
   HeartHandshake,
   Camera,
   UserPlus,
+  Zap,
 } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import type { RelationshipStatusType } from '@/store/relationshipStore';
 
 interface QuickActionsProps {
@@ -76,42 +76,32 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
     });
   }
 
-  const gridColsClass =
-    actions.length === 5
-      ? 'grid-cols-2 sm:grid-cols-5'
-      : 'grid-cols-2 sm:grid-cols-4';
-
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base font-semibold text-foreground">
-          <span>Quick Actions</span>
-        </CardTitle>
-      </CardHeader>
-
-      <CardContent>
-        <div className={`grid ${gridColsClass} gap-3`}>
-          {actions.map((act) => {
-            const Icon = act.icon;
-            return (
-              <motion.button
-                key={act.label}
-                whileHover={{ y: act.disabled ? 0 : -2 }}
-                whileTap={{ scale: act.disabled ? 1 : 0.98 }}
-                onClick={act.onClick}
-                disabled={act.disabled}
-                className={`p-4 rounded-xl border border-border bg-secondary/30 hover:bg-secondary/70 hover:border-border text-foreground font-medium text-xs flex flex-col items-center justify-center gap-2 transition-all ${
-                  act.disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'
-                }`}
-              >
-                <Icon className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
-                <span className="text-center truncate w-full">{act.label}</span>
-              </motion.button>
-            );
-          })}
-        </div>
-      </CardContent>
-    </Card>
+    <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider shrink-0 flex items-center gap-1.5 mr-1">
+        <Zap className="w-3.5 h-3.5 text-primary" />
+        Quick Actions:
+      </span>
+      {actions.map((act) => {
+        const Icon = act.icon;
+        return (
+          <motion.button
+            key={act.label}
+            whileHover={{ y: act.disabled ? 0 : -1 }}
+            whileTap={{ scale: act.disabled ? 1 : 0.96 }}
+            onClick={act.onClick}
+            disabled={act.disabled}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border/60 bg-secondary/30 hover:bg-secondary/70 hover:border-primary/30 text-xs font-medium text-foreground shrink-0 transition-all ${
+              act.disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'
+            }`}
+          >
+            <Icon className="w-3.5 h-3.5 text-primary" />
+            <span>{act.label}</span>
+          </motion.button>
+        );
+      })}
+    </div>
   );
 };
+
 

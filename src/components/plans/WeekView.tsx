@@ -64,7 +64,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
             >
               {/* Header */}
               <div className="text-center pb-3 border-b border-slate-100 dark:border-slate-800/80">
-                <span className="block text-[11px] font-semibold uppercase text-slate-500 dark:text-slate-400">
+                <span className="block text-[11px] font-bold uppercase text-slate-700 dark:text-slate-200 tracking-wider">
                   {DAYS_OF_WEEK[dayDate.getDay()]}
                 </span>
                 <span

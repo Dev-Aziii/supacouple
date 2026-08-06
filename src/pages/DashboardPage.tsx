@@ -5,7 +5,6 @@ import { useSession } from '@/hooks/useSession';
 import { useCouple } from '@/hooks/useCouple';
 import { useStatus } from '@/hooks/useStatus';
 import { useRealtimePlans } from '@/hooks/useRealtimePlans';
-import { useRealtimeActivities } from '@/hooks/useRealtimeActivities';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import { StatusCard, StatusPicker, StatusHistory } from '@/components/status';
 import {
@@ -15,7 +14,6 @@ import {
   UpcomingPlansCard,
   DashboardMemoriesCard,
   PendingItemsCard,
-  ActivityFeed,
   RelationshipSummary,
   StatisticsCard,
   QuickActions,
@@ -50,13 +48,6 @@ export const DashboardPage: React.FC = () => {
   } = useStatus();
 
   const { todayPlans, upcomingPlans, isTodayPlansLoading } = useRealtimePlans();
-  const {
-    groupedActivities,
-    isLoading: isActivitiesLoading,
-    hasNextPage,
-    isFetchingNextPage,
-    fetchNextPage,
-  } = useRealtimeActivities();
 
   const {
     stats,
@@ -114,7 +105,7 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto p-4 sm:p-6 pb-20 animate-in fade-in duration-300">
-      {/* 1. Header & Dynamic Greeting */}
+      {/* 1. Header Greeting */}
       <DashboardGreeting
         userName={userName}
         partnerName={partnerName}
@@ -124,7 +115,7 @@ export const DashboardPage: React.FC = () => {
         partnerAvatar={partner?.avatarUrl}
       />
 
-      {/* 2. Quick Actions Bar */}
+      {/* 2. Sleek Quick Actions Bar */}
       <QuickActions
         onSetStatus={() => setIsPickerOpen(true)}
         onCreatePlan={() => navigate(ROUTES.PLANS)}
@@ -136,7 +127,16 @@ export const DashboardPage: React.FC = () => {
         relationshipStatus={relationshipStatus}
       />
 
-      {/* 3. Partner Live Status Hero Card */}
+      {/* 3. Pending Actions Banner (High Priority) */}
+      <PendingItemsCard
+        proposals={pendingProposals}
+        invitations={pendingInvitations}
+        notifications={unreadNotifications}
+        onAcceptProposal={() => navigate(ROUTES.PROPOSAL)}
+        onDeclineProposal={() => navigate(ROUTES.PROPOSAL)}
+      />
+
+      {/* 4. Partner Live Status Hero Card */}
       <PartnerHeroCard
         partnerName={partnerName}
         partnerAvatar={partner?.avatarUrl}
@@ -146,7 +146,7 @@ export const DashboardPage: React.FC = () => {
         onInvitePartner={() => navigate(ROUTES.PAIR)}
       />
 
-      {/* 4. Current User Status & Presets */}
+      {/* 5. Current User Status & Presets */}
       <div className="space-y-3">
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1 shrink-0">
@@ -183,18 +183,9 @@ export const DashboardPage: React.FC = () => {
         />
       </div>
 
-      {/* 5. Pending Items Banner (if any) */}
-      <PendingItemsCard
-        proposals={pendingProposals}
-        invitations={pendingInvitations}
-        notifications={unreadNotifications}
-        onAcceptProposal={() => navigate(ROUTES.PROPOSAL)}
-        onDeclineProposal={() => navigate(ROUTES.PROPOSAL)}
-      />
-
-      {/* 6. Main Dashboard Grid Layout (Desktop Two-Column) */}
+      {/* 6. Main Dashboard Grid Layout (Balanced Two-Column) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left / Main Column: Schedule, Upcoming Plans & Shared Stats */}
+        {/* Left Column: Today's Plans, Upcoming Plans & Shared Memories */}
         <div className="lg:col-span-7 space-y-6">
           <TodayPlansCard
             todayPlans={todayPlans}
@@ -212,14 +203,12 @@ export const DashboardPage: React.FC = () => {
             coupleId={couple?.id}
             onAddMemory={() => navigate(ROUTES.GALLERY)}
           />
-
-          <StatisticsCard stats={stats} isLoading={isStatsLoading} />
         </div>
 
-        {/* Right Column: Activity Feed, Recent Notifications & Relationship Summary */}
+        {/* Right Column: Relationship Summary, Stats & Recent Notifications */}
         <div className="lg:col-span-5 space-y-6">
           <RecentNotificationsWidget />
-
+            
           <RelationshipSummary
             partnerName={partnerName}
             partnerAvatar={partner?.avatarUrl}
@@ -227,13 +216,8 @@ export const DashboardPage: React.FC = () => {
             daysTogether={stats.relationshipDays}
           />
 
-          <ActivityFeed
-            groupedActivities={groupedActivities}
-            isLoading={isActivitiesLoading}
-            hasNextPage={hasNextPage}
-            isFetchingNextPage={isFetchingNextPage}
-            onFetchNextPage={fetchNextPage}
-          />
+          <StatisticsCard stats={stats} isLoading={isStatsLoading} />
+
         </div>
       </div>
 
@@ -260,3 +244,4 @@ export const DashboardPage: React.FC = () => {
     </div>
   );
 };
+

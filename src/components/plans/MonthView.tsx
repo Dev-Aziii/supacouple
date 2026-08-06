@@ -70,7 +70,7 @@ export const MonthView: React.FC<MonthViewProps> = ({
   return (
     <div className="w-full overflow-hidden rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
       {/* Weekday Header */}
-      <div className="grid grid-cols-7 border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-850 text-center text-xs font-semibold text-slate-600 dark:text-slate-400">
+      <div className="grid grid-cols-7 border-b border-slate-200 dark:border-slate-800 bg-slate-100/80 dark:bg-slate-800/90 text-center text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider">
         {DAYS_OF_WEEK.map((day) => (
           <div key={day} className="py-2.5">
             {day}
