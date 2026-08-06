@@ -1,6 +1,7 @@
 import { supabase } from '../supabase/client';
 import { normalizeError } from '../errors';
 import type { Database } from '../../types/database';
+import { pushNotificationService } from '../notifications/pushNotificationService';
 
 type NotificationRow = Database['public']['Tables']['notifications']['Row'];
 
@@ -149,7 +150,30 @@ export class NotificationRepository implements INotificationRepository {
         .single();
 
       if (error) throw normalizeError(error);
-      return this.mapRow(data);
+
+      const created = this.mapRow(data);
+
+      // Asynchronously trigger Web Push notification without blocking in-app flow
+      pushNotificationService
+        .sendPushNotification({
+          recipientId: notification.recipientId,
+          title: notification.title,
+          body: notification.body,
+          type: notification.type,
+          url:
+            notification.type === 'proposal'
+              ? '/proposals'
+              : notification.type === 'memory'
+              ? '/memories'
+              : notification.type === 'plan'
+              ? '/plans'
+              : '/dashboard',
+        })
+        .catch((err) => {
+          console.warn('[NotificationRepository] Background push trigger notice:', err);
+        });
+
+      return created;
     } catch (err) {
       console.error('[NotificationRepository] create error:', err);
       throw normalizeError(err);

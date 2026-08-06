@@ -1,17 +1,51 @@
-import React from 'react';
-import { Bell, Mail, Smartphone, Calendar, Heart, MessageSquare, Camera, Loader2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { Bell, Mail, Smartphone, Calendar, Heart, MessageSquare, Camera, Loader2, AlertCircle } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { useSettings } from '@/hooks/useSettings';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 import type { NotificationPreferences } from '@/types/settings';
 import { cn } from '@/utils/cn';
 
 export const NotificationSettingsSection: React.FC = () => {
   const { notificationPreferences, updateNotificationPreferences, isUpdatingNotifPrefs } = useSettings();
+  const {
+    isSupported: isPushSupported,
+    permission: pushPermission,
+    isLoading: isPushLoading,
+    enablePushNotifications,
+    disablePushNotifications,
+  } = usePushNotifications();
+
+  const [pushErrorMessage, setPushErrorMessage] = useState<string | null>(null);
 
   const handleToggle = async (key: keyof Omit<NotificationPreferences, 'userId' | 'createdAt' | 'updatedAt'>) => {
     if (!notificationPreferences) return;
+    setPushErrorMessage(null);
     const currentValue = notificationPreferences[key];
-    await updateNotificationPreferences({ [key]: !currentValue });
+    const newValue = !currentValue;
+
+    if (key === 'pushNotifications') {
+      if (newValue) {
+        if (!isPushSupported) {
+          setPushErrorMessage('Web Push Notifications are not supported in this browser.');
+          return;
+        }
+        const success = await enablePushNotifications();
+        if (!success) {
+          if (pushPermission === 'denied') {
+            setPushErrorMessage('Notification permission is blocked in your browser settings. Please enable it in browser settings.');
+          } else {
+            setPushErrorMessage('Failed to subscribe to push notifications. Ensure VAPID keys are configured.');
+          }
+          await updateNotificationPreferences({ pushNotifications: false });
+          return;
+        }
+      } else {
+        await disablePushNotifications();
+      }
+    }
+
+    await updateNotificationPreferences({ [key]: newValue });
   };
 
   const toggles: {
@@ -31,7 +65,11 @@ export const NotificationSettingsSection: React.FC = () => {
     {
       key: 'pushNotifications',
       label: 'PWA Web Push Alerts',
-      description: 'Receive real-time push notifications on mobile and desktop',
+      description: isPushSupported
+        ? pushPermission === 'denied'
+          ? 'Push blocked in browser settings'
+          : 'Receive real-time push notifications on mobile and desktop'
+        : 'Push notifications not supported on this browser',
       icon: Smartphone,
       color: 'text-purple-400',
     },
@@ -78,9 +116,18 @@ export const NotificationSettingsSection: React.FC = () => {
       </CardHeader>
 
       <CardContent className="space-y-3">
+        {pushErrorMessage && (
+          <div className="flex items-center gap-2 p-3.5 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 text-xs font-medium mb-3">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <span>{pushErrorMessage}</span>
+          </div>
+        )}
+
         {toggles.map((item) => {
           const Icon = item.icon;
           const isChecked = notificationPreferences ? notificationPreferences[item.key] : true;
+          const isPushToggle = item.key === 'pushNotifications';
+          const isLoadingThisToggle = isUpdatingNotifPrefs || (isPushToggle && isPushLoading);
 
           return (
             <div
@@ -102,7 +149,7 @@ export const NotificationSettingsSection: React.FC = () => {
                 role="switch"
                 aria-checked={isChecked}
                 onClick={() => handleToggle(item.key)}
-                disabled={isUpdatingNotifPrefs}
+                disabled={isLoadingThisToggle}
                 className={cn(
                   'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
                   isChecked ? 'bg-pink-500' : 'bg-muted'
@@ -114,7 +161,7 @@ export const NotificationSettingsSection: React.FC = () => {
                     isChecked ? 'translate-x-5' : 'translate-x-0'
                   )}
                 >
-                  {isUpdatingNotifPrefs && (
+                  {isLoadingThisToggle && (
                     <Loader2 className="w-3 h-3 animate-spin text-pink-500 m-1" />
                   )}
                 </span>
@@ -126,3 +173,4 @@ export const NotificationSettingsSection: React.FC = () => {
     </Card>
   );
 };
+
