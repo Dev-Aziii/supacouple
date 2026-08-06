@@ -123,6 +123,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return result;
   };
 
+  const signInWithGoogle = async (redirectTo?: string) => {
+    return authService.signInWithGoogle(redirectTo);
+  };
+
   const signOut = async () => {
     setLoading(true);
     const result = await authService.signOut();
@@ -145,6 +149,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isInitialized,
         signIn,
         signUp,
+        signInWithGoogle,
         signOut,
         resetPassword,
         refreshProfile,

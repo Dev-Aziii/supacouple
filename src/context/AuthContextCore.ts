@@ -11,6 +11,7 @@ export interface AuthContextType {
   isInitialized: boolean;
   signIn: (credentials: SignInWithPasswordCredentials) => Promise<AuthResponse<{ user: User | null; session: Session | null }>>;
   signUp: (credentials: SignUpWithPasswordCredentials & { displayName?: string }) => Promise<AuthResponse<{ user: User | null; session: Session | null }>>;
+  signInWithGoogle: (redirectTo?: string) => Promise<AuthResponse<{ provider: string; url: string | null }>>;
   signOut: () => Promise<AuthResponse<null>>;
   resetPassword: (email: string, redirectTo?: string) => Promise<AuthResponse<null>>;
   refreshProfile: () => Promise<UserProfile | null>;

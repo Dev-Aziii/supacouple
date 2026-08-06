@@ -35,6 +35,29 @@ export class AuthService {
   }
 
   /**
+   * Initiate Google OAuth sign in workflow.
+   */
+  async signInWithGoogle(redirectTo?: string): Promise<AuthResponse<{ provider: string; url: string | null }>> {
+    try {
+      const redirectUrl = redirectTo || `${window.location.origin}/dashboard`;
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      });
+      if (error) throw normalizeError(error);
+      return { data: { provider: data.provider, url: data.url }, error: null };
+    } catch (err) {
+      return { data: null, error: normalizeError(err) };
+    }
+  }
+
+  /**
    * Sign out the currently authenticated user.
    */
   async signOut(): Promise<AuthResponse<null>> {
