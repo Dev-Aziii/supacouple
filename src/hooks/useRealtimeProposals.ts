@@ -139,8 +139,9 @@ export function useRealtimeProposals() {
   useEffect(() => {
     if (!coupleId) return;
 
+    const channelName = `realtime_proposals_${coupleId}_${Math.random().toString(36).substring(2, 9)}`;
     const proposalsChannel = supabase
-      .channel(`realtime_proposals_${coupleId}`)
+      .channel(channelName)
       .on(
         'postgres_changes',
         {

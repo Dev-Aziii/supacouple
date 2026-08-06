@@ -23,8 +23,9 @@ export function useNotifications(recipientId?: string) {
   useEffect(() => {
     if (!targetId) return;
 
+    const channelName = `notifications_${targetId}_${Math.random().toString(36).substring(2, 9)}`;
     const channel = supabase
-      .channel(`public:notifications:recipient_id=eq.${targetId}`)
+      .channel(channelName)
       .on(
         'postgres_changes',
         {

@@ -112,8 +112,9 @@ export function useRealtimePlans(options?: UseRealtimePlansOptions) {
   useEffect(() => {
     if (!coupleId) return;
 
+    const channelName = `plans_realtime_${coupleId}_${Math.random().toString(36).substring(2, 9)}`;
     const channel = supabase
-      .channel(`plans_realtime_${coupleId}`)
+      .channel(channelName)
       .on(
         'postgres_changes',
         {

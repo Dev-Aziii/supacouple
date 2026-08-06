@@ -9,7 +9,7 @@ export function useRealtimeMemories(coupleId?: string) {
   useEffect(() => {
     if (!coupleId) return;
 
-    const channelName = `realtime-memories-${coupleId}`;
+    const channelName = `realtime-memories-${coupleId}-${Math.random().toString(36).substring(2, 9)}`;
     const channel = supabase
       .channel(channelName)
       .on(

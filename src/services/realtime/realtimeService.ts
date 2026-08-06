@@ -14,7 +14,8 @@ export class RealtimeService {
     event: string,
     callback: (payload: Record<string, unknown>) => void
   ): RealtimeChannel {
-    const channel = supabase.channel(channelName);
+    const uniqueChannelName = `${channelName}_${Math.random().toString(36).substring(2, 9)}`;
+    const channel = supabase.channel(uniqueChannelName);
 
     channel
       .on('broadcast', { event }, (payload) => {

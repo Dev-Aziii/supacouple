@@ -43,8 +43,9 @@ export function useRealtimeActivities() {
   useEffect(() => {
     if (!coupleId) return;
 
+    const channelName = `realtime_activities_${coupleId}_${Math.random().toString(36).substring(2, 9)}`;
     const channel = supabase
-      .channel(`realtime:activities:${coupleId}`)
+      .channel(channelName)
       .on(
         'postgres_changes',
         {

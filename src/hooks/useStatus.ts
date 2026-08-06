@@ -132,7 +132,7 @@ export function useStatus() {
   useEffect(() => {
     if (!userId) return;
 
-    const channelName = `realtime-statuses-${coupleId || userId}`;
+    const channelName = `realtime-statuses-${coupleId || userId}-${Math.random().toString(36).substring(2, 9)}`;
     const channel = supabase
       .channel(channelName)
       .on(

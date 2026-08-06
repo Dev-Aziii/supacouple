@@ -19,11 +19,13 @@ import { ProfilePage } from '@/pages/ProfilePage';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { NotificationsPage } from '@/pages/NotificationsPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
+import { RouteErrorElement } from '@/components/common/ErrorBoundary';
 import { ROUTES } from '@/constants/routes';
 
 export const router = createBrowserRouter([
   {
     element: <MainLayout />,
+    errorElement: <RouteErrorElement />,
     children: [
       {
         path: ROUTES.HOME,
@@ -59,6 +61,7 @@ export const router = createBrowserRouter([
   },
   {
     element: <ProtectedRoute />,
+    errorElement: <RouteErrorElement />,
     children: [
       {
         element: <DashboardLayout />,
